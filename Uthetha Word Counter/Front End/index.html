@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uthetha Word Counter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Black Top Bar -->
+    <div class="top-bar">
+        <span class="top-bar-text">Uthetha Word Counter</span>
+    </div>
+
+    <!-- White Header with Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">Word Counter</div>
+                <ul class="nav-menu">
+                    <li><a href="#analyze" class="nav-link">Analyze</a></li>
+                    <li><a href="#search" class="nav-link">Search & Highlight</a></li>
+                    <li><a href="#density" class="nav-link">Keyword Density</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Body with Transparent Background -->
+    <main class="body-container">
+        
+        <!-- Text Input Section -->
+        <section class="content-section" id="analyze">
+            <h2>Text Analysis</h2>
+            <div class="input-group">
+                <textarea 
+                    id="textInput" 
+                    class="text-input" 
+                    placeholder="Paste your text here to analyze..."
+                ></textarea>
+                <div class="button-group">
+                    <button onclick="clearText()" class="btn btn-secondary">Clear</button>
+                    <button onclick="copyText()" class="btn btn-secondary">Copy</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="content-section">
+            <h2>Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Words</div>
+                    <div class="stat-value" id="wordCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Characters</div>
+                    <div class="stat-value" id="charCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Sentences</div>
+                    <div class="stat-value" id="sentenceCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Paragraphs</div>
+                    <div class="stat-value" id="paragraphCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Words/Sentence</div>
+                    <div class="stat-value" id="avgWords">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Chars/Word</div>
+                    <div class="stat-value" id="avgChars">0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Highlight Section -->
+        <section class="content-section" id="search">
+            <h2>Search & Highlight Keywords</h2>
+            <div class="search-group">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Enter keywords to search (separated by commas for multiple keywords)"
+                >
+                <div class="search-buttons">
+                    <button onclick="searchKeywords()" class="btn btn-primary">Search</button>
+                    <button onclick="clearHighlight()" class="btn btn-secondary">Clear Highlight</button>
+                </div>
+            </div>
+            <div class="search-info" id="searchInfo"></div>
+            <div class="highlighted-text-container">
+                <div class="highlighted-text" id="highlightedText">
+                    Your text will appear here with highlighted keywords...
+                </div>
+            </div>
+        </section>
+
+        <!-- Keyword Density Section -->
+        <section class="content-section" id="density">
+            <h2>Keyword Density Tracker</h2>
+            <div class="density-controls">
+                <input 
+                    type="number" 
+                    id="minOccurrences" 
+                    class="density-input" 
+                    min="1" 
+                    value="2"
+                    placeholder="Minimum occurrences"
+                >
+                <button onclick="calculateDensity()" class="btn btn-primary">Calculate Density</button>
+            </div>
+            <div class="density-results" id="densityResults">
+                <p class="placeholder-text">Keyword density will appear here...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Color Legend -->
+    <div class="color-legend">
+        <h3>Highlight Colors</h3>
+        <div class="legend-items">
+            <div class="legend-item"><span class="color-swatch" style="background-color: #FFD700;"></span>Keyword 1</div>
+            <div class="legend-item"><span class="color-swatch" style="background-color: #FF6B6B;"></span>Keyword 2</div>
+            <div class="legend-item"><span class="color-swatch" style="background-color: #4ECDC4;"></span>Keyword 3</div>
+            <div class="legend-item"><span class="color-swatch" style="background-color: #95E1D3;"></span>Keyword 4</div>
+            <div class="legend-item"><span class="color-swatch" style="background-color: #A8E6CF;"></span>Keyword 5+</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

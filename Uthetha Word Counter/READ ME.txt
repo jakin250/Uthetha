@@ -1,0 +1,170 @@
+UTHETHA WORD COUNTER
+====================
+
+PROJECT OVERVIEW
+A comprehensive text analysis web application with advanced keyword search and density tracking.
+
+FEATURES
+========
+
+1. TEXT STATISTICS
+   - Word Count: Total words in text
+   - Character Count: Total characters including spaces
+   - Sentence Count: Detected by . ! ?
+   - Paragraph Count: Separated by blank lines
+   - Average Words/Sentence: Writing style metric
+   - Average Characters/Word: Vocabulary complexity
+
+2. ADVANCED SEARCH & HIGHLIGHT
+   - Search multiple keywords simultaneously (comma-separated)
+   - Find keywords across entire document (not just side-by-side like Ctrl+F)
+   - Color code each keyword with unique colors for visual distinction
+   - Shows occurrence count per keyword
+   - Works across sentences and paragraphs
+
+3. KEYWORD DENSITY TRACKER
+   - Identify most frequently used words
+   - Customizable minimum occurrence threshold
+   - Automatic stop-word removal (common words filtered)
+   - Top 25 keywords displayed with frequency
+   - Percentage composition of each keyword
+   - Visual bar chart representation
+
+DESIGN
+======
+
+Layout:
+- Black top bar at the top
+- White header with navigation bar (sticky)
+- Transparent body background
+- White content sections with subtle shadows
+- Responsive design for all devices
+
+Colors:
+- Top bar: Black (#000)
+- Header: White
+- Body: Transparent
+- Sections: White with shadows
+- Navigation Links: Dark gray with hover effects
+
+FOLDER STRUCTURE
+================
+
+Uthetha Word Counter/
+├── Front End/
+│   ├── index.html      (Main HTML file - OPEN THIS!)
+│   ├── style.css       (Styling - all designs)
+│   ├── script.js       (Functionality - all features)
+│   ├── README.md       (Full documentation)
+│   └── QUICKSTART.md   (Quick start guide)
+├── Back End/           (Reserved for future backend)
+└── READ ME.txt         (This file)
+
+HOW TO USE
+==========
+
+1. Navigate to: Front End folder
+2. Open: index.html (double-click or right-click > Open with browser)
+3. Paste your text into the text area
+4. Features will work automatically:
+   - Statistics update in real-time
+   - Search for keywords with color highlighting
+   - Analyze keyword density patterns
+
+QUICK FEATURES GUIDE
+====================
+
+Word Counting Tab:
+- Paste text → View statistics instantly
+- All counts update in real-time
+
+Search & Highlight Tab:
+- Type keywords separated by commas
+- Click Search button
+- Keywords highlighted in different colors
+- See total matches and count per keyword
+
+Keyword Density Tab:
+- Set minimum occurrences (default: 2)
+- Click Calculate Density
+- View top keywords ranked by frequency
+- See percentage of total word usage
+
+BROWSER REQUIREMENTS
+====================
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+- Mobile browsers supported
+
+JavaScript must be enabled (default in all modern browsers)
+
+TECHNICAL DETAILS
+=================
+
+- Language: HTML5, CSS3, Vanilla JavaScript (no dependencies)
+- Size: Lightweight and fast
+- Responsive: Mobile, tablet, desktop
+- Cross-browser compatible
+- No backend required - runs entirely in browser
+
+WHAT MAKES THIS DIFFERENT?
+===========================
+
+vs. Ctrl+F:
+- Ctrl+F only finds consecutive words side-by-side
+- This tool finds keywords anywhere in the document
+- Can search multiple keywords simultaneously
+- Color codes different keywords
+- Provides statistics and density analysis
+
+vs. Online Tools:
+- No file uploads needed
+- No data sent to servers (privacy)
+- Offline functionality
+- No ads or distractions
+- Professional design
+
+SUPPORT FILES
+=============
+
+For detailed information:
+- README.md: Complete feature documentation
+- QUICKSTART.md: Quick start guide with common tasks
+
+FUTURE ENHANCEMENTS
+===================
+
+Planned features for Back End:
+- Export to PDF/CSV
+- Save analysis history
+- User accounts
+- Advanced readability scores
+- Multiple language support
+
+TROUBLESHOOTING
+===============
+
+Issue: Page won't load
+Fix: Ensure all files (index.html, style.css, script.js) are in same folder
+
+Issue: No styling visible
+Fix: Refresh page (Ctrl+F5) or clear cache
+
+Issue: Search not working
+Fix: Ensure JavaScript is enabled
+
+CREDITS
+=======
+
+Created: 2026
+Project: Uthetha Word Counter
+Purpose: Advanced text analysis and keyword tracking
+
+---
+
+GETTING STARTED RIGHT NOW:
+→ Open: Front End/index.html
+→ Paste text and start analyzing!

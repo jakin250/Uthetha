@@ -1,0 +1,66 @@
+SAMPLE TEXT FOR TESTING THE UTHETHA WORD COUNTER
+================================================
+
+This is a sample text that you can use to test all features of the Uthetha Word Counter application. The text analysis tool provides comprehensive insights into your writing patterns and keyword usage. Understanding your text metrics helps improve writing quality and readability.
+
+The word counter analyzes various aspects of text. The word counter identifies duplicated keywords. The word counter helps you monitor your language patterns. With the word counter, you can track important metrics. The word counter serves as an essential tool for writers.
+
+Here is another paragraph separated by a blank line. Notice how the paragraph counter recognizes this as a new paragraph. The application counts paragraphs by detecting blank lines between text sections. This method works well for most documents and essays.
+
+Keyword analysis reveals patterns in your writing. Keyword tracking identifies most frequently used terms. Keyword density shows how often you use specific words. Analyzing keywords helps optimize content. Keywords are essential for search engine optimization.
+
+The search functionality works differently from Ctrl+F. The search feature finds keywords anywhere in your text. Unlike standard browser search, this tool locates keywords across different sentences and paragraphs. This capability makes it powerful for comprehensive text analysis.
+
+Testing the color coding feature shows how keywords are highlighted. Each keyword receives a unique color for easy visual distinction. When you search multiple keywords simultaneously, each gets highlighted differently. The color scheme makes it easy to identify and distinguish between different keywords throughout your document.
+
+Consider using this tool for:
+- Blog post analysis
+- Academic paper review
+- Content optimization
+- Writing improvement
+- Readability assessment
+- SEO keyword analysis
+- Vocabulary tracking
+
+The statistics feature provides real-time analysis. As you type or paste text, all metrics update automatically. The application calculates word count, character count, sentence count, and paragraph count. Additional metrics include average words per sentence and average characters per word.
+
+Stop words are automatically filtered during keyword density analysis. Common words like "the", "a", "and", "is", "are" are excluded. This filtering helps focus on meaningful keywords that matter for your content. The density tracker shows only significant terms.
+
+Try searching for these keywords in the application:
+- Text: Found in most paragraphs
+- Word: Common throughout the document
+- Keyword: Mentioned multiple times
+- Analysis: Appears several times
+- Feature: Discussed in different contexts
+
+The responsive design ensures the tool works on all devices. Whether you use desktop, tablet, or mobile, the interface adapts perfectly. Navigation is smooth and intuitive across all screen sizes.
+
+This tool transforms how you interact with text. Traditional tools like Ctrl+F are limited. This advanced word counter provides comprehensive analysis. Understanding your text better improves your writing. Text analysis drives better content decisions.
+
+Testing multiple features simultaneously reveals the tool's power. You can count words while searching for keywords. Analysis happens in real-time as you input text. The keyword density tracker updates when requested. All features work together seamlessly.
+
+Consider the benefits of comprehensive text analysis:
+1. Identify writing patterns
+2. Spot overused words
+3. Improve readability
+4. Optimize for keywords
+5. Track writing metrics
+6. Analyze vocabulary
+7. Compare text versions
+8. Enhance content quality
+
+The user interface is clean and professional. Navigation is intuitive and easy to follow. Features are organized logically. The design is modern and responsive. Colors and styles enhance usability. Typography is clear and readable. Layout adapts to different screen sizes.
+
+Final thoughts on text analysis tools. The Uthetha Word Counter combines multiple features. It provides statistics, search capabilities, and density tracking. No other tool offers this comprehensive package. Try it today for better text understanding.
+
+---
+
+This sample text contains approximately 500 words and multiple repeated keywords. Use it to test:
+✓ Word and character counting
+✓ Sentence and paragraph detection
+✓ Keyword search across sentences
+✓ Color highlighting of multiple keywords
+✓ Keyword density analysis
+✓ Statistics calculations
+
+Happy testing!

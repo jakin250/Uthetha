@@ -1,0 +1,40 @@
+Create in codex a Text to Speech website using python and gtts. Where users can paste texts in their selected language or dialect to be converted into speech. The header with the navigation bar would be white background. A black top bar above the header. The body would have a transparent background. All sections/containers in the body would have white background. If possible use male and female voices.
+
+English UK,
+English US,
+English SA,
+Afrikaans
+Arabic
+Bengali
+Chinese (Simplified)
+Chinese (Traditional)
+Dutch
+French
+German
+Greek
+Gujarati
+Hausa
+Hindi
+Igbo
+Indonesian
+Italian
+Japanese
+Korean
+Portuguese
+Sepedi
+Russian
+Spanish
+Sotho
+Southern Ndebele
+Swahili
+Swazi
+Turkish
+Tsonga
+Tswana
+Ukrainian
+Urdu
+Venda
+Vietnamese
+Xhosa
+Yoruba
+Zulu

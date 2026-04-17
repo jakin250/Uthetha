@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uthetha Text to Speech</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body id="top">
+    <div class="top-bar">
+        <div class="site-shell top-bar__inner">
+            <p>Uthetha speech studio for fast text-to-MP3 conversion.</p>
+            <p>{{ supported_count }} ready now | {{ unsupported_count }} waiting on gTTS support</p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="#top">
+                <span class="brand__mark">Uthetha</span>
+                <span class="brand__sub">Text to Speech</span>
+            </a>
+
+            <nav class="site-nav" aria-label="Main navigation">
+                <a href="#overview">Overview</a>
+                <a href="#studio">Studio</a>
+                <a href="#coverage">Coverage</a>
+                <a href="#about">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="site-shell hero-grid" id="overview">
+            <article class="panel hero-card reveal">
+                <p class="eyebrow">Built with Python + gTTS</p>
+                <h1>Paste text, choose a language or dialect, and export clean MP3 speech.</h1>
+                <p class="hero-copy">
+                    This Uthetha build keeps the body transparent while every working section stays white, so the studio feels light, focused, and easy to use.
+                </p>
+                <div class="hero-actions">
+                    <a class="button button--primary" href="#studio">Open the studio</a>
+                    <a class="button button--ghost" href="#coverage">See language coverage</a>
+                </div>
+            </article>
+
+            <article class="panel stats-card reveal reveal--delay">
+                <div class="stat-block">
+                    <strong>{{ supported_count }}</strong>
+                    <span>Requested options ready to generate today</span>
+                </div>
+                <div class="stat-block">
+                    <strong>{{ unsupported_count }}</strong>
+                    <span>Requested options shown in the interface but disabled</span>
+                </div>
+                <div class="stat-block">
+                    <strong>1</strong>
+                    <span>Google voice profile per language in gTTS, with optional slow mode</span>
+                </div>
+            </article>
+        </section>
+
+        <section class="site-shell studio-grid" id="studio">
+            <article class="panel form-panel reveal">
+                <div class="section-heading">
+                    <p class="eyebrow">Speech Studio</p>
+                    <h2>Create an MP3</h2>
+                </div>
+
+                <form id="ttsForm" class="tts-form">
+                    <label class="field">
+                        <span>Language or dialect</span>
+                        <select id="language" name="language" required>
+                            <optgroup label="Available in gTTS">
+                                {% for language in supported_languages %}
+                                <option value="{{ language.id }}" {% if language.id == default_language_id %}selected{% endif %}>{{ language.label }}</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Requested but unavailable">
+                                {% for language in unsupported_languages %}
+                                <option value="{{ language.id }}" disabled>{{ language.label }} - unavailable</option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    </label>
+
+                    <div class="field">
+                        <span>Speech tempo</span>
+                        <div class="tempo-toggle" role="radiogroup" aria-label="Speech tempo">
+                            <label class="tempo-option">
+                                <input type="radio" name="tempo" value="normal" checked>
+                                <span>Normal</span>
+                            </label>
+                            <label class="tempo-option">
+                                <input type="radio" name="tempo" value="slow">
+                                <span>Slow</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <label class="field">
+                        <span>Text to convert</span>
+                        <textarea
+                            id="speechText"
+                            name="text"
+                            maxlength="{{ max_text_length }}"
+                            placeholder="Paste the words you want Uthetha to speak..."
+                            required
+                        ></textarea>
+                    </label>
+
+                    <div class="form-meta">
+                        <p id="selectionNote" class="selection-note"></p>
+                        <p id="characterCount" class="character-count">0 / {{ max_text_length }}</p>
+                    </div>
+
+                    <button id="generateButton" class="button button--primary button--wide" type="submit">
+                        Generate MP3 speech
+                    </button>
+                </form>
+            </article>
+
+            <div class="stack">
+                <article class="panel result-panel reveal reveal--delay">
+                    <div class="section-heading">
+                        <p class="eyebrow">Output</p>
+                        <h2>Playback and download</h2>
+                    </div>
+
+                    <p id="statusMessage" class="status-message">
+                        Your generated audio will appear here after you create it.
+                    </p>
+
+                    <audio id="audioPlayer" class="audio-player" controls hidden></audio>
+                    <a id="downloadLink" class="button button--ghost button--wide" href="#" download hidden>Download MP3</a>
+                </article>
+
+                <article class="panel insight-panel reveal reveal--delay-2">
+                    <div class="section-heading">
+                        <p class="eyebrow">Voice Engine</p>
+                        <h2>What gTTS can and cannot do</h2>
+                    </div>
+
+                    <ul class="plain-list">
+                        <li><code>gTTS</code> supports one Google voice profile per language or accent path.</li>
+                        <li>True male and female voice switching is not exposed by this library.</li>
+                        <li>Slow mode is included here as a practical alternative for clearer delivery.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="site-shell coverage-grid" id="coverage">
+            <article class="panel reveal">
+                <div class="section-heading">
+                    <p class="eyebrow">Coverage</p>
+                    <h2>Languages available now</h2>
+                </div>
+                <div class="chip-grid">
+                    {% for language in supported_languages %}
+                    <span class="chip">{{ language.label }}</span>
+                    {% endfor %}
+                </div>
+            </article>
+
+            <article class="panel reveal reveal--delay">
+                <div class="section-heading">
+                    <p class="eyebrow">Coverage Gap</p>
+                    <h2>Requested options not in this gTTS build</h2>
+                </div>
+                <ul class="plain-list plain-list--compact">
+                    {% for language in unsupported_languages %}
+                    <li>{{ language.label }}</li>
+                    {% endfor %}
+                </ul>
+            </article>
+        </section>
+
+        <section class="site-shell about-grid" id="about">
+            <article class="panel reveal">
+                <div class="section-heading">
+                    <p class="eyebrow">How It Works</p>
+                    <h2>Simple web flow</h2>
+                </div>
+                <ul class="plain-list">
+                    <li>Choose one of the currently supported language or dialect options.</li>
+                    <li>Paste up to {{ max_text_length }} characters into the text box.</li>
+                    <li>Generate audio, preview it in the browser, then download the MP3.</li>
+                </ul>
+            </article>
+
+            <article class="panel reveal reveal--delay-2">
+                <div class="section-heading">
+                    <p class="eyebrow">Important Note</p>
+                    <h2>Internet access is required</h2>
+                </div>
+                <p class="body-copy">
+                    <code>gTTS</code> sends requests to Google Text-to-Speech to create the audio file, so the app needs an active internet connection when users generate speech.
+                </p>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        window.uthethaConfig = {
+            defaultLanguageId: {{ default_language_id | tojson }},
+            maxTextLength: {{ max_text_length | tojson }},
+            languages: {{ language_options | tojson }}
+        };
+    </script>
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
