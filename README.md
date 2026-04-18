@@ -1,18 +1,22 @@
-# Uthetha Text to Speech
+# Uthetha
 
-This project is a simple text-to-speech website built with Python, Flask, and `gTTS`.
+Unified Uthetha website with:
 
-## Run it locally
+- Text to speech
+- Word counter
+- Keyword search and highlight
+- Keyword density tracking
 
-```powershell
-python -m pip install -r "Back End/requirements.txt"
-python "Back End/app.py"
-```
+## Vercel structure
 
-Open `http://127.0.0.1:5000` in your browser.
+This repo now has a root-level `index.html`, so Vercel can detect a homepage from the repository root.
 
-## Notes
+- `index.html` is the homepage
+- `styles.css` contains the merged site styling
+- `app.js` powers the shared frontend features
+- `api/speak.py` handles MP3 generation for `/api/speak`
+- `requirements.txt` installs the Python dependency for the speech API
 
-- The app requires internet access when generating audio because `gTTS` calls Google's Text-to-Speech service.
-- `gTTS` 2.5.4 does not expose true male or female voice selection, so this build uses the default Google voice for each language or accent path.
-- Some of the requested languages are shown in the interface as unavailable because they are not supported in the installed `gTTS` language set.
+## Deploy
+
+Import the repository into Vercel and deploy from the repository root.

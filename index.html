@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uthetha</title>
+    <meta
+        name="description"
+        content="Uthetha combines text-to-speech, word counting, keyword highlighting, and density tracking in one deployable site."
+    >
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body id="top">
+    <div class="top-bar">
+        <div class="site-shell top-bar__inner">
+            <p>Uthetha writing and speech studio</p>
+            <p>One homepage ready for Vercel deployment</p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="#top">
+                <span class="brand__mark">Uthetha</span>
+                <span class="brand__sub">Speech + Word Counter</span>
+            </a>
+
+            <nav class="site-nav" aria-label="Main navigation">
+                <a href="#workspace">Workspace</a>
+                <a href="#speech">Text to Speech</a>
+                <a href="#insights">Text Insights</a>
+                <a href="#coverage">Coverage</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="site-shell hero-grid" id="overview">
+            <article class="panel hero-card reveal">
+                <p class="eyebrow">Unified Uthetha experience</p>
+                <h1>Write once, count words, highlight keywords, and turn text into speech.</h1>
+                <p class="hero-copy">
+                    This merged version keeps both Uthetha tools in one flow, with one shared text area and a repo structure Vercel can deploy directly.
+                </p>
+                <div class="hero-actions">
+                    <a class="button button--primary" href="#workspace">Open workspace</a>
+                    <a class="button button--ghost" href="#speech">Create MP3</a>
+                </div>
+            </article>
+
+            <article class="panel stats-card reveal reveal--delay">
+                <div class="stat-block">
+                    <strong id="heroWordCount">0</strong>
+                    <span>Words in the current draft</span>
+                </div>
+                <div class="stat-block">
+                    <strong id="heroCharacterCount">0</strong>
+                    <span>Characters ready for analysis or speech</span>
+                </div>
+                <div class="stat-block">
+                    <strong id="heroSupportedCount">0</strong>
+                    <span>Language options currently available for speech</span>
+                </div>
+            </article>
+        </section>
+
+        <section class="site-shell workspace-grid" id="workspace">
+            <article class="panel editor-panel reveal">
+                <div class="section-heading">
+                    <p class="eyebrow">Workspace</p>
+                    <h2>Paste or draft your text once</h2>
+                </div>
+
+                <label class="field">
+                    <span>Your text</span>
+                    <textarea
+                        id="textInput"
+                        maxlength="5000"
+                        placeholder="Paste your text here to analyze and convert it to speech..."
+                    ></textarea>
+                </label>
+
+                <div class="editor-actions">
+                    <button id="clearButton" class="button button--ghost" type="button">Clear</button>
+                    <button id="copyButton" class="button button--ghost" type="button">Copy</button>
+                </div>
+
+                <div class="form-meta">
+                    <p class="selection-note">The same text powers the word counter, search, density tracker, and text-to-speech sections below.</p>
+                    <p id="characterCount" class="character-count">0 / 5000</p>
+                </div>
+            </article>
+
+            <div class="stack">
+                <article class="panel reveal reveal--delay">
+                    <div class="section-heading">
+                        <p class="eyebrow">Statistics</p>
+                        <h2>Live text analysis</h2>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="mini-stat">
+                            <span>Words</span>
+                            <strong id="wordCount">0</strong>
+                        </div>
+                        <div class="mini-stat">
+                            <span>Characters</span>
+                            <strong id="charCount">0</strong>
+                        </div>
+                        <div class="mini-stat">
+                            <span>Sentences</span>
+                            <strong id="sentenceCount">0</strong>
+                        </div>
+                        <div class="mini-stat">
+                            <span>Paragraphs</span>
+                            <strong id="paragraphCount">0</strong>
+                        </div>
+                        <div class="mini-stat">
+                            <span>Avg words / sentence</span>
+                            <strong id="avgWords">0</strong>
+                        </div>
+                        <div class="mini-stat">
+                            <span>Avg chars / word</span>
+                            <strong id="avgChars">0</strong>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="panel reveal reveal--delay-2">
+                    <div class="section-heading">
+                        <p class="eyebrow">Flow</p>
+                        <h2>How the merged site is organized</h2>
+                    </div>
+
+                    <ul class="plain-list">
+                        <li>Use one shared text area at the top of the page.</li>
+                        <li>Review your live counts, keyword search results, and density below.</li>
+                        <li>Generate MP3 speech from the same text without switching to another website.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="site-shell feature-grid" id="speech">
+            <article class="panel reveal">
+                <div class="section-heading">
+                    <p class="eyebrow">Text to Speech</p>
+                    <h2>Create an MP3</h2>
+                </div>
+
+                <form id="ttsForm" class="tts-form">
+                    <label class="field">
+                        <span>Language or dialect</span>
+                        <select id="language" name="language" required></select>
+                    </label>
+
+                    <div class="field">
+                        <span>Speech tempo</span>
+                        <div class="tempo-toggle" role="radiogroup" aria-label="Speech tempo">
+                            <label class="tempo-option">
+                                <input type="radio" name="tempo" value="normal" checked>
+                                <span>Normal</span>
+                            </label>
+                            <label class="tempo-option">
+                                <input type="radio" name="tempo" value="slow">
+                                <span>Slow</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-meta">
+                        <p id="selectionNote" class="selection-note"></p>
+                        <p id="ttsSupportedCounts" class="character-count"></p>
+                    </div>
+
+                    <button id="generateButton" class="button button--primary button--wide" type="submit">
+                        Generate MP3 speech
+                    </button>
+                </form>
+            </article>
+
+            <div class="stack">
+                <article class="panel reveal reveal--delay">
+                    <div class="section-heading">
+                        <p class="eyebrow">Output</p>
+                        <h2>Playback and download</h2>
+                    </div>
+
+                    <p id="statusMessage" class="status-message">
+                        Your generated audio will appear here after you create it.
+                    </p>
+
+                    <audio id="audioPlayer" class="audio-player" controls hidden></audio>
+                    <a id="downloadLink" class="button button--ghost button--wide" href="#" download hidden>Download MP3</a>
+                </article>
+
+                <article class="panel reveal reveal--delay-2">
+                    <div class="section-heading">
+                        <p class="eyebrow">Voice Engine</p>
+                        <h2>Current gTTS limits</h2>
+                    </div>
+
+                    <ul class="plain-list">
+                        <li>Each supported language uses the Google voice profile exposed by `gTTS`.</li>
+                        <li>Slow mode is available, but voice gender switching is not exposed here.</li>
+                        <li>Speech generation depends on network access because audio is created through Google Text-to-Speech.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="site-shell feature-grid" id="insights">
+            <article class="panel reveal">
+                <div class="section-heading">
+                    <p class="eyebrow">Search & Highlight</p>
+                    <h2>Find keywords in your text</h2>
+                </div>
+
+                <div class="search-group">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="Enter keywords separated by commas"
+                    >
+                    <div class="editor-actions">
+                        <button id="searchButton" class="button button--primary" type="button">Search</button>
+                        <button id="clearHighlightButton" class="button button--ghost" type="button">Clear highlight</button>
+                    </div>
+                </div>
+
+                <div class="search-info" id="searchInfo"></div>
+                <div class="highlighted-text-container">
+                    <div class="highlighted-text" id="highlightedText">
+                        Your text will appear here with highlighted keywords.
+                    </div>
+                </div>
+            </article>
+
+            <article class="panel reveal reveal--delay">
+                <div class="section-heading">
+                    <p class="eyebrow">Keyword Density</p>
+                    <h2>Track repeated terms</h2>
+                </div>
+
+                <div class="density-controls">
+                    <input
+                        type="number"
+                        id="minOccurrences"
+                        class="density-input"
+                        min="1"
+                        value="2"
+                        placeholder="Minimum occurrences"
+                    >
+                    <button id="densityButton" class="button button--primary" type="button">Calculate density</button>
+                </div>
+
+                <div class="density-results" id="densityResults">
+                    <p class="placeholder-text">Keyword density will appear here.</p>
+                </div>
+            </article>
+        </section>
+
+        <section class="site-shell coverage-grid" id="coverage">
+            <article class="panel reveal">
+                <div class="section-heading">
+                    <p class="eyebrow">Coverage</p>
+                    <h2>Languages available now</h2>
+                </div>
+                <div id="supportedLanguageChips" class="chip-grid"></div>
+            </article>
+
+            <article class="panel reveal reveal--delay">
+                <div class="section-heading">
+                    <p class="eyebrow">Coverage Gap</p>
+                    <h2>Requested options not supported yet</h2>
+                </div>
+                <ul id="unsupportedLanguageList" class="plain-list plain-list--compact"></ul>
+            </article>
+        </section>
+    </main>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
