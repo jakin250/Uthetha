@@ -14,7 +14,7 @@ This repo now has a root-level `index.html`, so Vercel can detect a homepage fro
 - `index.html` is the homepage
 - `styles.css` contains the merged site styling
 - `app.js` powers the shared frontend features
-- `api/speak.py` handles MP3 generation for `/api/speak`
+- `api/index.py` exports the Flask app and handles MP3 generation for `/api/speak`
 - `requirements.txt` installs the Python dependency for the speech API
 
 ## Deploy

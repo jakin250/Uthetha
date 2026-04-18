@@ -40,6 +40,11 @@ def disable_cache(response):
     return response
 
 
+@app.get("/api/health")
+def health():
+    return jsonify({"status": "ok"})
+
+
 @app.post("/api/speak")
 def speak():
     payload = request.get_json(silent=True) or request.form
