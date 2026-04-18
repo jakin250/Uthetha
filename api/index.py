@@ -2,15 +2,20 @@ from __future__ import annotations
 
 import io
 import re
+from pathlib import Path
 
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, send_from_directory
 from gtts import gTTS
 from gtts.tts import gTTSError
 
-from language_catalog import LANGUAGE_OPTIONS_BY_ID
+try:
+    from .language_catalog import LANGUAGE_OPTIONS_BY_ID
+except ImportError:
+    from language_catalog import LANGUAGE_OPTIONS_BY_ID
 
 
 MAX_TEXT_LENGTH = 5000
+ROOT_DIR = Path(__file__).resolve().parent.parent
 
 app = Flask(__name__)
 
@@ -38,6 +43,21 @@ def slugify(value: str) -> str:
 def disable_cache(response):
     response.headers["Cache-Control"] = "no-store"
     return response
+
+
+@app.get("/")
+def home():
+    return send_from_directory(ROOT_DIR, "index.html")
+
+
+@app.get("/styles.css")
+def styles():
+    return send_from_directory(ROOT_DIR, "styles.css")
+
+
+@app.get("/app.js")
+def script():
+    return send_from_directory(ROOT_DIR, "app.js")
 
 
 @app.get("/api/health")
