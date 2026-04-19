@@ -22,7 +22,7 @@ from language_catalog import (
 
 
 FRONTEND_DIR = BASE_DIR.parent / "Front End"
-MAX_TEXT_LENGTH = 5000
+MAX_TEXT_LENGTH = 500000
 DEFAULT_LANGUAGE_ID = "english-uk"
 
 app = Flask(
