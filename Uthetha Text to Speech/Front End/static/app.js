@@ -26,7 +26,7 @@ function updateLanguageNote() {
 
 function updateCharacterCount() {
     const currentLength = textArea.value.length;
-    characterCount.textContent = `${currentLength} / ${config.maxTextLength || 5000}`;
+    characterCount.textContent = `${currentLength} / ${config.maxTextLength || 500000}`;
 }
 
 function cleanupAudioUrl() {
