@@ -1,4 +1,4 @@
-const MAX_TEXT_LENGTH = 500000;
+const MAX_TEXT_LENGTH = 50000;
 const DEFAULT_LANGUAGE_ID = "english-us";
 const LANGUAGE_OPTIONS = [
     { id: "english-uk", label: "English UK", lang: "en", tld: "co.uk", supported: true, note: "Routes English speech through Google United Kingdom for a British accent." },
