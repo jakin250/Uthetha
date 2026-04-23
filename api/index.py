@@ -14,7 +14,7 @@ except ImportError:
     from language_catalog import LANGUAGE_OPTIONS_BY_ID
 
 
-MAX_TEXT_LENGTH = 5000
+MAX_TEXT_LENGTH = 50000
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
 app = Flask(__name__)
