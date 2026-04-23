@@ -36,16 +36,16 @@ body {
 }
 
 body[data-theme="dark"] {
-    --ink: #eef5f0;
-    --ink-soft: #b9cbc0;
-    --surface: rgba(25, 31, 28, 0.92);
-    --surface-strong: #1d2420;
-    --line: rgba(226, 240, 232, 0.12);
-    --shadow: 0 24px 55px rgba(0, 0, 0, 0.3);
-    --accent: #67c0a4;
-    --accent-strong: #b7e8d8;
-    --accent-soft: rgba(103, 192, 164, 0.14);
-    --warm: #e4b16a;
+    --ink: #ffffff;
+    --ink-soft: #ffffff;
+    --surface: #000000;
+    --surface-strong: #000000;
+    --line: rgba(255, 255, 255, 0.2);
+    --shadow: 0 24px 55px rgba(0, 0, 0, 0.55);
+    --accent: #ffffff;
+    --accent-strong: #ffffff;
+    --accent-soft: rgba(255, 255, 255, 0.12);
+    --warm: #ffffff;
 }
 
 a {
@@ -383,6 +383,39 @@ textarea {
     background: var(--surface-strong);
     border-color: var(--line);
     color: var(--ink);
+}
+
+body[data-theme="dark"] .site-header,
+body[data-theme="dark"] .translate-widget-shell,
+body[data-theme="dark"] .panel,
+body[data-theme="dark"] .ad-slot,
+body[data-theme="dark"] textarea,
+body[data-theme="dark"] select,
+body[data-theme="dark"] .search-input,
+body[data-theme="dark"] .density-input {
+    background: #000000;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+body[data-theme="dark"] .button--primary,
+body[data-theme="dark"] .button--ghost,
+body[data-theme="dark"] .theme-toggle,
+body[data-theme="dark"] #google_translate_element .goog-te-gadget-simple {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+}
+
+body[data-theme="dark"] .button--primary:hover,
+body[data-theme="dark"] .button--primary:focus-visible,
+body[data-theme="dark"] .button--ghost:hover,
+body[data-theme="dark"] .button--ghost:focus-visible,
+body[data-theme="dark"] .theme-toggle:hover,
+body[data-theme="dark"] .theme-toggle:focus-visible {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
 }
 
 .button--wide {
