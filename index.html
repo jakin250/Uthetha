@@ -26,16 +26,26 @@
                 <span class="brand__sub">Speech + Word Counter</span>
             </a>
 
-            <nav class="site-nav" aria-label="Main navigation">
-                <a href="#workspace">Workspace</a>
-                <a href="#speech">Text to Speech</a>
-                <a href="#insights">Text Insights</a>
-                <a href="#coverage">Coverage</a>
-            </nav>
+            <div class="header-actions">
+                <nav class="site-nav" aria-label="Main navigation">
+                    <a href="#workspace">Workspace</a>
+                    <a href="#speech">Text to Speech</a>
+                    <a href="#insights">Text Insights</a>
+                    <a href="#coverage">Coverage</a>
+                </nav>
+                <div class="utility-controls">
+                    <div class="translate-widget-shell">
+                        <span class="utility-label">Translate</span>
+                        <div id="google_translate_element"></div>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode">Dark mode</button>
+                </div>
+            </div>
         </div>
     </header>
 
-    <main class="page">
+    <div class="site-content-shell">
+    <main class="page site-main-stack">
         <section class="site-shell hero-grid" id="overview">
             <article class="panel hero-card reveal">
                 <p class="eyebrow">Unified Uthetha experience</p>
@@ -280,6 +290,22 @@
             </article>
         </section>
     </main>
+
+    <aside class="site-ad-rail" aria-label="Advertising spaces">
+        <a class="ad-slot ad-slot--box" href="https://selar.com/m/umthethx1985756" target="_blank" rel="noopener noreferrer" aria-label="Advertisement space 1, 300 by 250">
+            <img src="assets/ads/ad-300x250-1.png" alt="Advertisement space 1, 300 by 250" loading="lazy">
+        </a>
+        <a class="ad-slot ad-slot--box" href="https://selar.com/m/umthethx1985756" target="_blank" rel="noopener noreferrer" aria-label="Advertisement space 2, 300 by 250">
+            <img src="assets/ads/ad-300x250-2.png" alt="Advertisement space 2, 300 by 250" loading="lazy">
+        </a>
+        <a class="ad-slot ad-slot--tall" href="https://www.amazon.com/dp/B0G4F6LVWG?binding=kindle_edition&ref=dbs_dp_rwt_sb_pc_tkin" target="_blank" rel="noopener noreferrer" aria-label="Advertisement space 3, 300 by 600">
+            <img src="assets/ads/ad-300x600-1.png" alt="Advertisement space 3, 300 by 600" loading="lazy">
+        </a>
+        <a class="ad-slot ad-slot--tall" href="https://www.amazon.com/dp/B0G4F6LVWG?binding=kindle_edition&ref=dbs_dp_rwt_sb_pc_tkin" target="_blank" rel="noopener noreferrer" aria-label="Advertisement space 4, 300 by 600">
+            <img src="assets/ads/ad-300x600-2.png" alt="Advertisement space 4, 300 by 600" loading="lazy">
+        </a>
+    </aside>
+    </div>
 
     <script src="app.js" defer></script>
 </body>

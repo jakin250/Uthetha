@@ -77,8 +77,54 @@ const densityButton = document.getElementById("densityButton");
 const densityResults = document.getElementById("densityResults");
 const supportedLanguageChips = document.getElementById("supportedLanguageChips");
 const unsupportedLanguageList = document.getElementById("unsupportedLanguageList");
+const themeToggle = document.getElementById("themeToggle");
 
 let activeAudioUrl = null;
+
+function applyTheme(theme) {
+    document.body.dataset.theme = theme;
+    window.localStorage.setItem("uthetha-theme", theme);
+
+    if (themeToggle) {
+        const isDark = theme === "dark";
+        themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
+        themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    }
+}
+
+function initializeTheme() {
+    const storedTheme = window.localStorage.getItem("uthetha-theme");
+    applyTheme(storedTheme === "dark" ? "dark" : "light");
+
+    themeToggle?.addEventListener("click", () => {
+        applyTheme(document.body.dataset.theme === "dark" ? "light" : "dark");
+    });
+}
+
+function initializeTranslateWidget() {
+    const translateRoot = document.getElementById("google_translate_element");
+    if (!translateRoot) {
+        return;
+    }
+
+    window.googleTranslateElementInit = () => {
+        if (!window.google?.translate?.TranslateElement) {
+            return;
+        }
+
+        new window.google.translate.TranslateElement({
+            pageLanguage: "en",
+            includedLanguages: "af,ar,de,en,es,fr,hi,it,ja,ko,nl,pt,ru,sw,tr,ur,vi,zh-CN,zh-TW,zu",
+            autoDisplay: false,
+            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+        }, "google_translate_element");
+    };
+
+    const script = document.createElement("script");
+    script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.async = true;
+    document.head.appendChild(script);
+}
 
 function setStatus(message, state = "idle") {
     statusMessage.textContent = message;
@@ -430,6 +476,8 @@ function bindEvents() {
 }
 
 function initialize() {
+    initializeTheme();
+    initializeTranslateWidget();
     renderLanguageOptions();
     renderCoverage();
     bindEvents();

@@ -35,6 +35,19 @@ body {
     font-family: "Trebuchet MS", "Segoe UI", sans-serif;
 }
 
+body[data-theme="dark"] {
+    --ink: #eef5f0;
+    --ink-soft: #b9cbc0;
+    --surface: rgba(25, 31, 28, 0.92);
+    --surface-strong: #1d2420;
+    --line: rgba(226, 240, 232, 0.12);
+    --shadow: 0 24px 55px rgba(0, 0, 0, 0.3);
+    --accent: #67c0a4;
+    --accent-strong: #b7e8d8;
+    --accent-soft: rgba(103, 192, 164, 0.14);
+    --warm: #e4b16a;
+}
+
 a {
     color: inherit;
     text-decoration: none;
@@ -50,6 +63,19 @@ textarea {
 .site-shell {
     width: min(1120px, calc(100% - 2rem));
     margin: 0 auto;
+}
+
+.site-content-shell {
+    width: min(1448px, calc(100% - 2rem));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 1.75rem;
+    align-items: start;
+}
+
+.site-main-stack {
+    min-width: 0;
 }
 
 .top-bar {
@@ -117,6 +143,81 @@ textarea {
     gap: 1rem;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.utility-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.translate-widget-shell {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface-strong);
+}
+
+.utility-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.theme-toggle {
+    min-height: 2.75rem;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    color: var(--ink);
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(13, 107, 82, 0.35);
+    color: var(--accent-strong);
+    outline: none;
+}
+
+#google_translate_element {
+    min-width: 180px;
+}
+
+#google_translate_element .goog-te-gadget {
+    color: var(--ink-soft) !important;
+    font-family: inherit !important;
+    font-size: 0.9rem !important;
+}
+
+#google_translate_element .goog-te-gadget-simple {
+    border: 1px solid var(--line) !important;
+    background: var(--surface) !important;
+    border-radius: 999px !important;
+    padding: 6px 10px !important;
+}
+
+#google_translate_element .goog-te-gadget-simple span,
+#google_translate_element .goog-te-gadget-simple a {
+    color: var(--ink) !important;
+}
+
 .site-nav a {
     color: var(--ink-soft);
     font-weight: 600;
@@ -129,6 +230,48 @@ textarea {
 
 .page {
     padding: 2rem 0 4rem;
+}
+
+.site-ad-rail {
+    position: sticky;
+    top: 6.5rem;
+    display: grid;
+    gap: 1rem;
+    width: 300px;
+    padding-top: 2rem;
+}
+
+.ad-slot {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.ad-slot:hover,
+.ad-slot:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 28px 48px rgba(19, 38, 29, 0.18);
+    border-color: rgba(13, 107, 82, 0.28);
+    outline: none;
+}
+
+.ad-slot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-slot--box {
+    aspect-ratio: 6 / 5;
+}
+
+.ad-slot--tall {
+    aspect-ratio: 1 / 2;
 }
 
 .hero-grid,
@@ -574,6 +717,19 @@ textarea {
 }
 
 @media (max-width: 960px) {
+    .site-content-shell {
+        width: min(1120px, calc(100% - 2rem));
+        grid-template-columns: 1fr;
+    }
+
+    .site-ad-rail {
+        position: static;
+        width: min(100%, 620px);
+        margin: 0 auto 3rem;
+        padding-top: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .hero-grid,
     .workspace-grid,
     .feature-grid,
@@ -587,12 +743,27 @@ textarea {
 }
 
 @media (max-width: 700px) {
+    .site-content-shell {
+        width: min(100% - 1rem, 1448px);
+        gap: 1rem;
+    }
+
+    .site-ad-rail {
+        width: 100%;
+        grid-template-columns: 1fr;
+        margin-bottom: 2rem;
+    }
+
     .top-bar__inner,
     .site-header__inner,
     .form-meta,
     .density-controls {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .header-actions {
+        justify-content: flex-start;
     }
 
     .stats-grid,
