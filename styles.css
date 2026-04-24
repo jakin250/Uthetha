@@ -161,19 +161,23 @@ textarea {
 .translate-widget-shell {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 0.75rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--surface-strong);
+    gap: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
 }
 
 .utility-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .theme-toggle {
@@ -197,25 +201,40 @@ textarea {
 }
 
 #google_translate_element {
-    min-width: 180px;
+    min-width: 36px;
 }
 
 #google_translate_element .goog-te-gadget {
-    color: var(--ink-soft) !important;
+    color: transparent !important;
     font-family: inherit !important;
-    font-size: 0.9rem !important;
+    font-size: 0 !important;
 }
 
 #google_translate_element .goog-te-gadget-simple {
+    width: 36px !important;
+    height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     border: 1px solid var(--line) !important;
     background: var(--surface) !important;
     border-radius: 999px !important;
-    padding: 6px 10px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
 }
 
-#google_translate_element .goog-te-gadget-simple span,
-#google_translate_element .goog-te-gadget-simple a {
+#google_translate_element .goog-te-gadget-simple > span,
+#google_translate_element .goog-te-gadget-simple img {
+    display: none !important;
+}
+
+#google_translate_element .goog-te-gadget-simple::before {
+    content: "文";
     color: var(--ink) !important;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .site-nav a {
