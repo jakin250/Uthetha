@@ -1,5 +1,5 @@
-const MAX_TEXT_LENGTH = 50000;
-const DEFAULT_LANGUAGE_ID = "english-us";
+const MAX_TEXT_LENGTH = 250000;
+const DEFAULT_LANGUAGE_ID = "english-uk";
 const LANGUAGE_OPTIONS = [
     { id: "english-uk", label: "English UK", lang: "en", tld: "co.uk", supported: true, note: "Routes English speech through Google United Kingdom for a British accent." },
     { id: "english-us", label: "English US", lang: "en", tld: "com", supported: true, note: "Uses Google's default English voice, which is the closest gTTS match for US English." },
