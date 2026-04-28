@@ -114,9 +114,8 @@ function initializeTranslateWidget() {
 
         new window.google.translate.TranslateElement({
             pageLanguage: "en",
-            includedLanguages: "af,ar,de,en,es,fr,hi,it,ja,ko,nl,pt,ru,sw,tr,ur,vi,zh-CN,zh-TW,zu",
+            includedLanguages: "af,ar,de,en,es,fr,hi,it,ja,ko,nl,pt,ru,sw,tr,ur,vi,zh-CN,zh-TW,ig,yo,xh,ss,nr,tn,st,nso,ts,ve,zu",
             autoDisplay: false,
-            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
         }, "google_translate_element");
     };
 
@@ -487,3 +486,4 @@ function initialize() {
 }
 
 document.addEventListener("DOMContentLoaded", initialize);
+
