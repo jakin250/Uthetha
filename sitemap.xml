@@ -1,44 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
-  <!-- Homepage - Main tool interface -->
-  <url>
-    <loc>https://uthetha.unysa.online/</loc>
-    <lastmod>2026-04-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <!-- API endpoint for speech generation (discoverable but not user-navigable) -->
-  <url>
-    <loc>https://uthetha.unysa.online/api/speak</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  
-  <!-- Static assets (CSS) - good for SEO of styling -->
-  <url>
-    <loc>https://uthetha.unysa.online/styles.css</loc>
-    <lastmod>2026-04-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <!-- JavaScript application file -->
-  <url>
-    <loc>https://uthetha.unysa.online/app.js</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <!-- Sitemap itself -->
-  <url>
-    <loc>https://uthetha.unysa.online/sitemap.xml</loc>
-    <lastmod>2026-04-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!--  created with Free Online Sitemap Generator www.xml-sitemaps.com  -->
+<url>
+<loc>https://uthetha.unysa.online/</loc>
+<lastmod>2018-10-20T01:46:40+00:00</lastmod>
+</url>
 </urlset>
