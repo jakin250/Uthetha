@@ -3,7 +3,7 @@
   
   <!-- Homepage - Main tool interface -->
   <url>
-    <loc>https://uthethx.vercel.app/</loc>
+    <loc>https://uthetha.unysa.online/</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -11,7 +11,7 @@
   
   <!-- API endpoint for speech generation (discoverable but not user-navigable) -->
   <url>
-    <loc>https://uthethx.vercel.app/api/speak</loc>
+    <loc>https://uthetha.unysa.online/api/speak</loc>
     <lastmod>2026-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
@@ -19,7 +19,7 @@
   
   <!-- Static assets (CSS) - good for SEO of styling -->
   <url>
-    <loc>https://uthethx.vercel.app/styles.css</loc>
+    <loc>https://uthetha.unysa.online/styles.css</loc>
     <lastmod>2026-04-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.2</priority>
@@ -27,7 +27,7 @@
   
   <!-- JavaScript application file -->
   <url>
-    <loc>https://uthethx.vercel.app/app.js</loc>
+    <loc>https://uthetha.unysa.online/app.js</loc>
     <lastmod>2026-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.2</priority>
@@ -35,7 +35,7 @@
   
   <!-- Sitemap itself -->
   <url>
-    <loc>https://uthethx.vercel.app/sitemap.xml</loc>
+    <loc>https://uthetha.unysa.online/sitemap.xml</loc>
     <lastmod>2026-04-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
