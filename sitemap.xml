@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Homepage - Main tool interface -->
+  <url>
+    <loc>https://uthethx.vercel.app/</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- API endpoint for speech generation (discoverable but not user-navigable) -->
+  <url>
+    <loc>https://uthethx.vercel.app/api/speak</loc>
+    <lastmod>2026-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Static assets (CSS) - good for SEO of styling -->
+  <url>
+    <loc>https://uthethx.vercel.app/styles.css</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <!-- JavaScript application file -->
+  <url>
+    <loc>https://uthethx.vercel.app/app.js</loc>
+    <lastmod>2026-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <!-- Sitemap itself -->
+  <url>
+    <loc>https://uthethx.vercel.app/sitemap.xml</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+</urlset>
