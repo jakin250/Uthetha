@@ -108,6 +108,7 @@ function initializeTheme() {
 
 function initializeTranslateWidget() {
     const translateRoot = document.getElementById("google_translate_element");
+    const translateShell = document.querySelector(".translate-widget-shell");
     if (!translateRoot) {
         return;
     }
@@ -125,15 +126,41 @@ function initializeTranslateWidget() {
 
         const bindTranslateToggle = () => {
             const combo = translateRoot.querySelector(".goog-te-combo");
-            if (!combo || !translateToggle) {
+            if (!combo || !translateToggle || !translateShell || translateToggle.dataset.bound === "true") {
                 return false;
             }
 
             translateToggle.addEventListener("click", () => {
-                combo.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-                combo.focus();
-                combo.click();
+                const shouldOpen = !translateShell.classList.contains("translate-widget-shell--open");
+                translateShell.classList.toggle("translate-widget-shell--open", shouldOpen);
+                translateToggle.setAttribute("aria-expanded", String(shouldOpen));
+
+                if (shouldOpen) {
+                    combo.focus();
+                }
             });
+
+            combo.addEventListener("change", () => {
+                translateShell.classList.remove("translate-widget-shell--open");
+                translateToggle.setAttribute("aria-expanded", "false");
+            });
+
+            document.addEventListener("click", (event) => {
+                if (!translateShell.contains(event.target)) {
+                    translateShell.classList.remove("translate-widget-shell--open");
+                    translateToggle.setAttribute("aria-expanded", "false");
+                }
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") {
+                    translateShell.classList.remove("translate-widget-shell--open");
+                    translateToggle.setAttribute("aria-expanded", "false");
+                }
+            });
+
+            translateToggle.dataset.bound = "true";
+            translateToggle.setAttribute("aria-expanded", "false");
             return true;
         };
 
