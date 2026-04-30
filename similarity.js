@@ -1,138 +1,112 @@
 const textAreas = Array.from(document.querySelectorAll('.similarity-text'));
 const uploadInputs = Array.from(document.querySelectorAll('.text-upload'));
-const previews = Array.from(document.querySelectorAll('.text-preview'));
 const analyzeButton = document.getElementById('analyzeSimilarity');
 const clearButton = document.getElementById('clearSimilarity');
 const statusMessage = document.getElementById('similarityStatus');
-const overallScore = document.getElementById('overallScore');
 const resultsSection = document.getElementById('similarityResults');
 const similarityTable = document.getElementById('similarityTable');
-const grammarResults = document.getElementById('grammarResults');
-const grammarOutput = document.getElementById('grammarOutput');
-const grammarSummary = document.getElementById('grammarSummary');
-const HIGHLIGHT_CLASSES = ['highlight-1', 'highlight-2', 'highlight-3', 'highlight-4', 'highlight-5'];
 
-const escapeHtml = (value) => value.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-
-function tokenize(text) { return new Set(text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(Boolean)); }
-function splitSentences(text) { return text.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean); }
-
-function jaccardSimilarity(a, b) {
-    const x = tokenize(a); const y = tokenize(b);
-    if (!x.size && !y.size) return 100;
-    const i = [...x].filter((t) => y.has(t)).length;
-    const u = new Set([...x, ...y]).size;
-    return u ? (i / u) * 100 : 0;
+function tokenize(text) {
+    return new Set(
+        text
+            .toLowerCase()
+            .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+            .split(/\s+/)
+            .filter(Boolean)
+    );
 }
 
-function setStatus(message, state = 'idle') { statusMessage.textContent = message; statusMessage.dataset.state = state; }
+function jaccardSimilarity(firstText, secondText) {
+    const firstTokens = tokenize(firstText);
+    const secondTokens = tokenize(secondText);
+
+    if (firstTokens.size === 0 && secondTokens.size === 0) {
+        return 100;
+    }
+
+    const intersectionSize = [...firstTokens].filter((token) => secondTokens.has(token)).length;
+    const unionSize = new Set([...firstTokens, ...secondTokens]).size;
+
+    return unionSize === 0 ? 0 : (intersectionSize / unionSize) * 100;
+}
+
+function setStatus(message, state = 'idle') {
+    statusMessage.textContent = message;
+    statusMessage.dataset.state = state;
+}
 
 function buildTable(entries) {
     const labels = entries.map(({ label }) => label);
-    let html = '<thead><tr><th>Text</th>' + labels.map((l) => `<th>${l}</th>`).join('') + '</tr></thead><tbody>';
-    let total = 0; let count = 0;
-    entries.forEach((r, ri) => {
-        html += `<tr><th>${r.label}</th>`;
-        entries.forEach((c, ci) => {
-            if (ri === ci) { html += '<td>100.00%</td>'; return; }
-            const score = jaccardSimilarity(r.text, c.text);
-            if (ci > ri) { total += score; count += 1; }
-            html += `<td>${score.toFixed(2)}%</td>`;
+    let tableMarkup = '<thead><tr><th>Text</th>';
+    labels.forEach((label) => {
+        tableMarkup += `<th>${label}</th>`;
+    });
+    tableMarkup += '</tr></thead><tbody>';
+
+    entries.forEach((rowEntry, rowIndex) => {
+        tableMarkup += `<tr><th>${rowEntry.label}</th>`;
+        entries.forEach((columnEntry, columnIndex) => {
+            if (rowIndex === columnIndex) {
+                tableMarkup += '<td>100.00%</td>';
+            } else {
+                const score = jaccardSimilarity(rowEntry.text, columnEntry.text);
+                tableMarkup += `<td>${score.toFixed(2)}%</td>`;
+            }
         });
-        html += '</tr>';
+        tableMarkup += '</tr>';
     });
-    similarityTable.innerHTML = html + '</tbody>';
-    overallScore.textContent = count ? `Final overall similarity score: ${(total / count).toFixed(2)}%` : '';
-}
 
-function buildSharedSentenceMap(entries) {
-    const map = new Map();
-    entries.forEach(({ text, index }) => {
-        const unique = new Set(splitSentences(text).map((s) => s.toLowerCase()));
-        unique.forEach((s) => {
-            if (!map.has(s)) map.set(s, new Set());
-            map.get(s).add(index);
-        });
-    });
-    return [...map.entries()].filter(([, docs]) => docs.size >= 2 && docs.size <= 4).sort((a, b) => b[0].length - a[0].length);
-}
-
-function renderHighlights(entries) {
-    const sharedSentences = buildSharedSentenceMap(entries);
-    previews.forEach((preview) => { preview.innerHTML = '<p class="muted">No highlights yet.</p>'; });
-
-    entries.forEach(({ text, index }) => {
-        let highlighted = escapeHtml(text);
-        sharedSentences.forEach(([sentence, docs], i) => {
-            if (!docs.has(index)) return;
-            const cls = HIGHLIGHT_CLASSES[i % HIGHLIGHT_CLASSES.length];
-            const safe = escapeHtml(sentence);
-            const pattern = new RegExp(safe.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-            highlighted = highlighted.replace(pattern, `<mark class="${cls}">$&</mark>`);
-        });
-        previews[index].innerHTML = highlighted || '<p class="muted">No text provided.</p>';
-    });
-}
-
-function runBasicGrammarChecks(text, label) {
-    const issues = []; const lines = text.split(/\n+/);
-    lines.forEach((line, i) => {
-        const t = line.trim(); if (!t) return;
-        if (!/^[A-Z"'(\[]/.test(t)) issues.push(`${label}: Line ${i + 1} may need capitalization at the start.`);
-        if (!/[.!?]$/.test(t)) issues.push(`${label}: Line ${i + 1} may be missing end punctuation.`);
-        if (/\s{2,}/.test(line)) issues.push(`${label}: Line ${i + 1} has repeated spaces.`);
-        const rep = t.match(/\b(\w+)\s+\1\b/i); if (rep) issues.push(`${label}: Line ${i + 1} repeats the word "${rep[1]}".`);
-    });
-    if ((text.match(/"/g) || []).length % 2 !== 0) issues.push(`${label}: Possible unbalanced double quotation marks.`);
-    if ((text.match(/\(/g) || []).length !== (text.match(/\)/g) || []).length) issues.push(`${label}: Possible unbalanced parentheses.`);
-    return issues;
-}
-
-function renderGrammarResults(entries) {
-    const grouped = entries.map(({ text, label }) => ({ label, issues: runBasicGrammarChecks(text, label) }));
-    const issues = grouped.flatMap((item) => item.issues);
-
-    grammarSummary.innerHTML = grouped
-        .map((item) => {
-            const issueCount = item.issues.length;
-            const score = Math.max(0, 100 - (issueCount * 7));
-            return `<p><strong>${item.label}</strong>: ${issueCount} issue(s) · Grammar score ${score}%</p>`;
-        })
-        .join('');
-
-    grammarOutput.innerHTML = issues.length
-        ? `<ul>${issues.map((x) => `<li>${x}</li>`).join('')}</ul>`
-        : '<p>No obvious grammar issues found by the basic checker.</p>';
-    grammarResults.hidden = false;
+    tableMarkup += '</tbody>';
+    similarityTable.innerHTML = tableMarkup;
 }
 
 function analyzeSimilarity() {
-    const entries = textAreas.map((a, i) => ({ text: a.value.trim(), label: `Text ${i + 1}`, index: i })).filter((e) => e.text);
-    if (entries.length < 2) {
-        resultsSection.hidden = true; grammarResults.hidden = true; overallScore.textContent = '';
-        setStatus('Please add content in at least two text boxes before analyzing.', 'error'); return;
+    const populatedEntries = textAreas
+        .map((area, index) => ({ text: area.value.trim(), label: `Text ${index + 1}` }))
+        .filter(({ text }) => text.length > 0);
+
+    if (populatedEntries.length < 2) {
+        resultsSection.hidden = true;
+        setStatus('Please add content in at least two text boxes before analyzing.', 'error');
+        return;
     }
-    buildTable(entries); renderHighlights(entries); renderGrammarResults(entries);
+
+    buildTable(populatedEntries);
     resultsSection.hidden = false;
-    setStatus(`Analysis complete for ${entries.length} text(s). Shared sentences are color highlighted in each preview.`, 'success');
+    setStatus(`Analysis complete for ${populatedEntries.length} text(s).`, 'success');
 }
 
 function clearAll() {
-    textAreas.forEach((a) => { a.value = ''; }); uploadInputs.forEach((i) => { i.value = ''; });
-    previews.forEach((p) => { p.innerHTML = ''; }); similarityTable.innerHTML = ''; grammarOutput.innerHTML = ''; grammarSummary.innerHTML = '';
-    resultsSection.hidden = true; grammarResults.hidden = true; overallScore.textContent = '';
+    textAreas.forEach((area) => {
+        area.value = '';
+    });
+    uploadInputs.forEach((input) => {
+        input.value = '';
+    });
+    similarityTable.innerHTML = '';
+    resultsSection.hidden = true;
     setStatus('All text inputs cleared.', 'idle');
 }
 
-uploadInputs.forEach((input) => input.addEventListener('change', async (event) => {
-    const file = event.target.files?.[0]; if (!file) return;
-    try {
-        const fileText = await file.text(); const idx = Number(input.dataset.index); textAreas[idx].value = fileText;
-        setStatus(`${file.name} loaded into Text ${idx + 1}.`, 'success');
-    } catch {
-        setStatus(`Could not read ${file.name}. Please try a plain-text file.`, 'error');
-    }
-}));
+uploadInputs.forEach((input) => {
+    input.addEventListener('change', async (event) => {
+        const file = event.target.files?.[0];
+        if (!file) {
+            return;
+        }
+
+        try {
+            const fileText = await file.text();
+            const target = textAreas[Number(input.dataset.index)];
+            if (target) {
+                target.value = fileText;
+                setStatus(`${file.name} loaded into Text ${Number(input.dataset.index) + 1}.`, 'success');
+            }
+        } catch (error) {
+            setStatus(`Could not read ${file.name}. Please try a plain-text file.`, 'error');
+        }
+    });
+});
 
 analyzeButton.addEventListener('click', analyzeSimilarity);
 clearButton.addEventListener('click', clearAll);
