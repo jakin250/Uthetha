@@ -159,13 +159,9 @@ textarea {
 }
 
 .translate-widget-shell {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
 }
 
 .utility-label {
@@ -181,7 +177,10 @@ textarea {
 }
 
 #google_translate_element {
-    min-width: min(100%, 220px);
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
 }
 
 #google_translate_element .goog-te-gadget {
@@ -197,28 +196,70 @@ textarea {
 }
 
 #google_translate_element .goog-te-combo {
-    width: 220px;
-    max-width: 100%;
-    min-height: 2.75rem;
-    padding: 0.7rem 2.4rem 0.7rem 0.95rem;
+    width: 1px;
+    height: 1px;
+    min-height: 1px;
+    padding: 0;
     border: 1px solid var(--line) !important;
+    border-radius: 0;
+    background: transparent;
+    color: transparent;
+    font-size: 0;
+    box-shadow: none !important;
+    appearance: none;
+    -webkit-appearance: none;
+    clip-path: inset(50%);
+}
+
+.translate-toggle,
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.6rem;
+    border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--surface-strong);
     color: var(--ink);
-    font: inherit;
-    font-weight: 700;
-    box-shadow: none;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-    background-position: calc(100% - 18px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
-    background-size: 6px 6px, 6px 6px;
-    background-repeat: no-repeat;
+    cursor: pointer;
 }
 
-#google_translate_element .goog-te-combo:focus {
-    outline: 3px solid rgba(13, 107, 82, 0.12);
-    border-color: rgba(13, 107, 82, 0.5) !important;
+.translate-toggle {
+    width: 2.6rem;
+    min-width: 2.6rem;
+    padding: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.theme-toggle {
+    gap: 0.55rem;
+    padding: 0.3rem 0.8rem 0.3rem 0.35rem;
+    font-weight: 700;
+}
+
+.theme-toggle__track {
+    width: 2rem;
+    height: 1.2rem;
+    border-radius: 999px;
+    background: rgba(19, 38, 29, 0.2);
+    padding: 0.12rem;
+}
+
+.theme-toggle__thumb {
+    display: block;
+    width: 0.95rem;
+    height: 0.95rem;
+    border-radius: 50%;
+    background: var(--surface-strong);
+    border: 1px solid var(--line);
+    transform: translateX(0);
+    transition: transform 180ms ease;
+}
+
+body[data-theme="dark"] .theme-toggle__thumb {
+    transform: translateX(0.78rem);
 }
 
 .site-nav a {
@@ -403,6 +444,7 @@ body[data-theme="dark"] .density-input {
 
 body[data-theme="dark"] .button--primary,
 body[data-theme="dark"] .button--ghost,
+body[data-theme="dark"] .translate-toggle,
 body[data-theme="dark"] .theme-toggle,
 body[data-theme="dark"] #google_translate_element .goog-te-combo {
     background: #ffffff !important;
@@ -414,6 +456,8 @@ body[data-theme="dark"] .button--primary:hover,
 body[data-theme="dark"] .button--primary:focus-visible,
 body[data-theme="dark"] .button--ghost:hover,
 body[data-theme="dark"] .button--ghost:focus-visible,
+body[data-theme="dark"] .translate-toggle:hover,
+body[data-theme="dark"] .translate-toggle:focus-visible,
 body[data-theme="dark"] .theme-toggle:hover,
 body[data-theme="dark"] .theme-toggle:focus-visible {
     background: #000000 !important;
@@ -821,4 +865,3 @@ textarea {
         align-items: flex-start;
     }
 }
-

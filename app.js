@@ -78,6 +78,7 @@ const densityResults = document.getElementById("densityResults");
 const supportedLanguageChips = document.getElementById("supportedLanguageChips");
 const unsupportedLanguageList = document.getElementById("unsupportedLanguageList");
 const themeToggle = document.getElementById("themeToggle");
+const translateToggle = document.getElementById("translateToggle");
 
 let activeAudioUrl = null;
 
@@ -87,8 +88,12 @@ function applyTheme(theme) {
 
     if (themeToggle) {
         const isDark = theme === "dark";
-        themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
-        themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+        const themeLabel = themeToggle.querySelector(".theme-toggle__label");
+        if (themeLabel) {
+            themeLabel.textContent = isDark ? "Light" : "Dark";
+        }
+        themeToggle.setAttribute("aria-checked", String(isDark));
+        themeToggle.setAttribute("aria-label", isDark ? "Toggle light mode" : "Toggle dark mode");
     }
 }
 
@@ -117,6 +122,29 @@ function initializeTranslateWidget() {
             includedLanguages: "af,ar,de,en,es,fr,hi,it,ja,ko,nl,pt,ru,sw,tr,ur,vi,zh-CN,zh-TW,ig,yo,xh,ss,nr,tn,st,nso,ts,ve,zu",
             autoDisplay: false,
         }, "google_translate_element");
+
+        const bindTranslateToggle = () => {
+            const combo = translateRoot.querySelector(".goog-te-combo");
+            if (!combo || !translateToggle) {
+                return false;
+            }
+
+            translateToggle.addEventListener("click", () => {
+                combo.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+                combo.focus();
+                combo.click();
+            });
+            return true;
+        };
+
+        if (!bindTranslateToggle()) {
+            const observer = new MutationObserver(() => {
+                if (bindTranslateToggle()) {
+                    observer.disconnect();
+                }
+            });
+            observer.observe(translateRoot, { childList: true, subtree: true });
+        }
     };
 
     const script = document.createElement("script");
@@ -486,4 +514,3 @@ function initialize() {
 }
 
 document.addEventListener("DOMContentLoaded", initialize);
-

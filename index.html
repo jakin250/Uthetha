@@ -46,9 +46,15 @@
                 <div class="utility-controls">
                     <div class="translate-widget-shell">
                         <span class="utility-label">Translate</span>
+                        <button class="translate-toggle" id="translateToggle" type="button" aria-label="Open translation language selector">文</button>
                         <div id="google_translate_element"></div>
                     </div>
-                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode">Dark mode</button>
+                    <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Toggle dark mode">
+                        <span class="theme-toggle__track">
+                            <span class="theme-toggle__thumb"></span>
+                        </span>
+                        <span class="theme-toggle__label">Dark</span>
+                    </button>
                 </div>
             </div>
         </div>
