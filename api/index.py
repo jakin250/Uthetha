@@ -60,6 +60,16 @@ def script():
     return send_from_directory(ROOT_DIR, "app.js")
 
 
+@app.get("/similarity.html")
+def similarity_page():
+    return send_from_directory(ROOT_DIR, "similarity.html")
+
+
+@app.get("/similarity.js")
+def similarity_script():
+    return send_from_directory(ROOT_DIR, "similarity.js")
+
+
 @app.get("/api/health")
 def health():
     return jsonify({"status": "ok"})

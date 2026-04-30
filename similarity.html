@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uthetha Text Similarity Checker</title>
+    <meta name="description" content="Compare up to four pasted or uploaded texts and view their similarity scores.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="site-shell top-bar__inner">
+            <p>Uthetha text and speech studio</p>
+            <a href="index.html">Main workspace</a>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-shell site-header__inner">
+            <a class="brand" href="index.html">
+                <span class="brand__mark">Uthetha</span>
+                <span class="brand__sub">Text Similarity</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="page site-main-stack site-shell">
+        <section class="panel reveal similarity-panel">
+            <div class="section-heading">
+                <p class="eyebrow">Similarity checker</p>
+                <h1>Compare four texts side-by-side</h1>
+                <p class="hero-copy">Paste text directly or upload .txt, .md, or .csv files, then run similarity analysis.</p>
+            </div>
+
+            <div class="similarity-input-grid">
+                <article class="similarity-card">
+                    <h2>Text 1</h2>
+                    <input type="file" class="text-upload" data-index="0" accept=".txt,.md,.csv,text/plain,text/markdown,text/csv">
+                    <textarea class="similarity-text" data-index="0" placeholder="Paste or upload text 1"></textarea>
+                </article>
+                <article class="similarity-card">
+                    <h2>Text 2</h2>
+                    <input type="file" class="text-upload" data-index="1" accept=".txt,.md,.csv,text/plain,text/markdown,text/csv">
+                    <textarea class="similarity-text" data-index="1" placeholder="Paste or upload text 2"></textarea>
+                </article>
+                <article class="similarity-card">
+                    <h2>Text 3</h2>
+                    <input type="file" class="text-upload" data-index="2" accept=".txt,.md,.csv,text/plain,text/markdown,text/csv">
+                    <textarea class="similarity-text" data-index="2" placeholder="Paste or upload text 3"></textarea>
+                </article>
+                <article class="similarity-card">
+                    <h2>Text 4</h2>
+                    <input type="file" class="text-upload" data-index="3" accept=".txt,.md,.csv,text/plain,text/markdown,text/csv">
+                    <textarea class="similarity-text" data-index="3" placeholder="Paste or upload text 4"></textarea>
+                </article>
+            </div>
+
+            <div class="similarity-actions">
+                <button id="analyzeSimilarity" class="button button--primary" type="button">Analyze similarity</button>
+                <button id="clearSimilarity" class="button button--ghost" type="button">Clear all</button>
+            </div>
+
+            <p id="similarityStatus" class="status-message">Add at least two texts with content to begin.</p>
+
+            <div id="similarityResults" class="similarity-results" hidden>
+                <h2>Pairwise similarity (Jaccard %)</h2>
+                <div class="table-wrap">
+                    <table class="similarity-table" id="similarityTable"></table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="similarity.js" defer></script>
+</body>
+</html>
