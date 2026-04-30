@@ -211,6 +211,25 @@ textarea {
     clip-path: inset(50%);
 }
 
+.translate-widget-shell--open #google_translate_element {
+    inset: calc(100% + 0.45rem) auto auto 0;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 20;
+}
+
+.translate-widget-shell--open #google_translate_element .goog-te-combo {
+    width: 14rem;
+    height: 2.6rem;
+    min-height: 2.6rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 0.8rem;
+    background: var(--surface-strong);
+    color: var(--ink);
+    font-size: 0.92rem;
+    clip-path: inset(0);
+}
+
 .translate-toggle,
 .theme-toggle {
     display: inline-flex;
