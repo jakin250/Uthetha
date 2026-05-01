@@ -13,6 +13,7 @@ const grammarSummary = document.getElementById('grammarSummary');
 const matchResults = document.getElementById('matchResults');
 const matchLegend = document.getElementById('matchLegend');
 const matchList = document.getElementById('matchList');
+const similarityPanel = document.querySelector('.similarity-panel');
 const HIGHLIGHT_CLASSES = ['highlight-1', 'highlight-2', 'highlight-3', 'highlight-4', 'highlight-5'];
 
 const escapeHtml = (value) => value.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
@@ -236,25 +237,74 @@ function analyzeSimilarity() {
         resultsSection.hidden = true; grammarResults.hidden = true; matchResults.hidden = true; overallScore.textContent = '';
         setStatus('Please add content in at least two text boxes before analyzing.', 'error'); return;
     }
-    buildTable(entries); const sharedSentences = renderHighlights(entries); renderMatchSummary(entries, sharedSentences); renderGrammarResults(entries);
-    resultsSection.hidden = false;
-    setStatus(`Analysis complete for ${entries.length} text(s). Shared sentences are color highlighted in each preview.`, 'success');
+    try {
+        buildTable(entries); const sharedSentences = renderHighlights(entries); renderMatchSummary(entries, sharedSentences); renderGrammarResults(entries);
+        similarityPanel?.classList.add('preview-only');
+        resultsSection.hidden = false;
+        setStatus(`Analysis complete for ${entries.length} text(s). Shared sentences are color highlighted in each preview.`, 'success');
+    } catch (error) {
+        console.error(error);
+        resultsSection.hidden = true; grammarResults.hidden = true; matchResults.hidden = true;
+        setStatus('There was a problem while analyzing this input. Try shorter text or refresh and try again.', 'error');
+    }
 }
 
 function clearAll() {
     textAreas.forEach((a) => { a.value = ''; }); uploadInputs.forEach((i) => { i.value = ''; });
     previews.forEach((p) => { p.innerHTML = ''; }); similarityTable.innerHTML = ''; grammarOutput.innerHTML = ''; grammarSummary.innerHTML = ''; matchLegend.innerHTML = ''; matchList.innerHTML = '';
     resultsSection.hidden = true; grammarResults.hidden = true; matchResults.hidden = true; overallScore.textContent = '';
+    similarityPanel?.classList.remove('preview-only');
     setStatus('All text inputs cleared.', 'idle');
+}
+
+async function parsePdfFile(file) {
+    if (!window.pdfjsLib) {
+        await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js';
+            script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
+        });
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
+    }
+    const buffer = await file.arrayBuffer();
+    const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
+    const pages = await Promise.all(Array.from({ length: pdf.numPages }, async (_, i) => {
+        const page = await pdf.getPage(i + 1);
+        const content = await page.getTextContent();
+        return content.items.map((item) => item.str).join(' ');
+    }));
+    return pages.join('\n');
+}
+
+async function parseDocxFile(file) {
+    if (!window.mammoth) {
+        await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js';
+            script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
+        });
+    }
+    const buffer = await file.arrayBuffer();
+    const result = await window.mammoth.extractRawText({ arrayBuffer: buffer });
+    return result.value;
+}
+
+async function parseFileContent(file) {
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    if (['txt', 'md', 'csv', 'rtf'].includes(ext) || file.type.startsWith('text/')) return file.text();
+    if (ext === 'pdf' || file.type === 'application/pdf') return parsePdfFile(file);
+    if (ext === 'docx' || file.type.includes('wordprocessingml')) return parseDocxFile(file);
+    if (ext === 'doc') throw new Error('Legacy .doc format is not reliably parseable in-browser. Convert to .docx or .pdf.');
+    return file.text();
 }
 
 uploadInputs.forEach((input) => input.addEventListener('change', async (event) => {
     const file = event.target.files?.[0]; if (!file) return;
     try {
-        const fileText = await file.text(); const idx = Number(input.dataset.index); textAreas[idx].value = fileText;
+        const fileText = await parseFileContent(file); const idx = Number(input.dataset.index); textAreas[idx].value = fileText;
         setStatus(`${file.name} loaded into Text ${idx + 1}.`, 'success');
-    } catch {
-        setStatus(`Could not read ${file.name}. Please try a plain-text file.`, 'error');
+    } catch (error) {
+        setStatus(`Could not read ${file.name}. ${error?.message || 'Try a different file.'}`, 'error');
     }
 }));
 
