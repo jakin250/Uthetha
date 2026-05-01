@@ -59,20 +59,18 @@ function fingerprintSimilarity(a, b) {
 }
 
 function levenshteinSimilarity(a, b) {
-    const s = tokenList(a).slice(0, 450).join(' ');
-    const t = tokenList(b).slice(0, 450).join(' ');
+    const s = normalizeWhitespace(a.toLowerCase()); const t = normalizeWhitespace(b.toLowerCase());
     if (!s.length && !t.length) return 100;
     const rows = s.length + 1; const cols = t.length + 1;
-    let prev = Array.from({ length: cols }, (_, j) => j);
+    const dp = Array.from({ length: rows }, (_, i) => [i]);
+    for (let j = 1; j < cols; j += 1) dp[0][j] = j;
     for (let i = 1; i < rows; i += 1) {
-        const curr = [i];
         for (let j = 1; j < cols; j += 1) {
-            const cost = s.charCodeAt(i - 1) === t.charCodeAt(j - 1) ? 0 : 1;
-            curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+            const cost = s[i - 1] === t[j - 1] ? 0 : 1;
+            dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
         }
-        prev = curr;
     }
-    const dist = prev[cols - 1];
+    const dist = dp[rows - 1][cols - 1];
     return Math.max(0, (1 - (dist / Math.max(s.length, t.length))) * 100);
 }
 
