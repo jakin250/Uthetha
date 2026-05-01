@@ -17,7 +17,9 @@ const HIGHLIGHT_CLASSES = ['highlight-1', 'highlight-2', 'highlight-3', 'highlig
 
 const escapeHtml = (value) => value.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 
-function tokenize(text) { return new Set(text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(Boolean)); }
+function normalizeWhitespace(text) { return text.replace(/\s+/g, ' ').trim(); }
+function tokenize(text) { return new Set(text.toLowerCase().replace(/[^\p{L}\p{N}\s']/gu, ' ').split(/\s+/).filter(Boolean)); }
+function tokenList(text) { return text.toLowerCase().replace(/[^\p{L}\p{N}\s']/gu, ' ').split(/\s+/).filter(Boolean); }
 function splitSentences(text) { return text.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean); }
 
 function jaccardSimilarity(a, b) {
@@ -26,6 +28,57 @@ function jaccardSimilarity(a, b) {
     const i = [...x].filter((t) => y.has(t)).length;
     const u = new Set([...x, ...y]).size;
     return u ? (i / u) * 100 : 0;
+}
+
+function ngramSet(tokens, n = 3) {
+    const set = new Set();
+    for (let i = 0; i <= tokens.length - n; i += 1) set.add(tokens.slice(i, i + n).join(' '));
+    return set;
+}
+
+function cosineSimilarity(a, b) {
+    const freq = (tokens) => tokens.reduce((m, t) => (m.set(t, (m.get(t) || 0) + 1), m), new Map());
+    const aFreq = freq(tokenList(a)); const bFreq = freq(tokenList(b));
+    const terms = new Set([...aFreq.keys(), ...bFreq.keys()]);
+    let dot = 0; let aNorm = 0; let bNorm = 0;
+    terms.forEach((term) => {
+        const av = aFreq.get(term) || 0; const bv = bFreq.get(term) || 0;
+        dot += av * bv; aNorm += av * av; bNorm += bv * bv;
+    });
+    if (!aNorm || !bNorm) return 0;
+    return (dot / (Math.sqrt(aNorm) * Math.sqrt(bNorm))) * 100;
+}
+
+function fingerprintSimilarity(a, b) {
+    const aTri = ngramSet(tokenList(a), 3); const bTri = ngramSet(tokenList(b), 3);
+    if (!aTri.size && !bTri.size) return 100;
+    const overlap = [...aTri].filter((g) => bTri.has(g)).length;
+    const union = new Set([...aTri, ...bTri]).size;
+    return union ? (overlap / union) * 100 : 0;
+}
+
+function levenshteinSimilarity(a, b) {
+    const s = normalizeWhitespace(a.toLowerCase()); const t = normalizeWhitespace(b.toLowerCase());
+    if (!s.length && !t.length) return 100;
+    const rows = s.length + 1; const cols = t.length + 1;
+    const dp = Array.from({ length: rows }, (_, i) => [i]);
+    for (let j = 1; j < cols; j += 1) dp[0][j] = j;
+    for (let i = 1; i < rows; i += 1) {
+        for (let j = 1; j < cols; j += 1) {
+            const cost = s[i - 1] === t[j - 1] ? 0 : 1;
+            dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+        }
+    }
+    const dist = dp[rows - 1][cols - 1];
+    return Math.max(0, (1 - (dist / Math.max(s.length, t.length))) * 100);
+}
+
+function compositeSimilarity(a, b) {
+    const jaccard = jaccardSimilarity(a, b);
+    const cosine = cosineSimilarity(a, b);
+    const fingerprint = fingerprintSimilarity(a, b);
+    const edit = levenshteinSimilarity(a, b);
+    return (jaccard * 0.25) + (cosine * 0.35) + (fingerprint * 0.25) + (edit * 0.15);
 }
 
 function setStatus(message, state = 'idle') { statusMessage.textContent = message; statusMessage.dataset.state = state; }
@@ -38,7 +91,7 @@ function buildTable(entries) {
         html += `<tr><th>${r.label}</th>`;
         entries.forEach((c, ci) => {
             if (ri === ci) { html += '<td>100.00%</td>'; return; }
-            const score = jaccardSimilarity(r.text, c.text);
+            const score = compositeSimilarity(r.text, c.text);
             if (ci > ri) { total += score; count += 1; }
             html += `<td>${score.toFixed(2)}%</td>`;
         });
@@ -138,6 +191,24 @@ function runBasicGrammarChecks(text, label) {
     });
     if ((text.match(/"/g) || []).length % 2 !== 0) issues.push(`${label}: Possible unbalanced double quotation marks.`);
     if ((text.match(/\(/g) || []).length !== (text.match(/\)/g) || []).length) issues.push(`${label}: Possible unbalanced parentheses.`);
+    const sent = splitSentences(text);
+    sent.forEach((sentence, i) => {
+        if (sentence.split(/\s+/).length > 35) issues.push(`${label}: Sentence ${i + 1} is very long; consider splitting it for clarity.`);
+        if (/\b(am|is|are|was|were|be|been|being)\s+\w+ed\b/i.test(sentence) && /\bby\b/i.test(sentence)) {
+            issues.push(`${label}: Sentence ${i + 1} may use passive voice ("${sentence.slice(0, 70)}${sentence.length > 70 ? '…' : ''}").`);
+        }
+        if (/\b(very|really|quite|just|actually)\b.*\b(very|really|quite|just|actually)\b/i.test(sentence)) {
+            issues.push(`${label}: Sentence ${i + 1} repeats weak modifiers (e.g., very/really/just).`);
+        }
+    });
+    const commonConfusions = [
+        [/\byour welcome\b/i, `Use "you're welcome" instead of "your welcome".`],
+        [/\bits a\b/i, `Check if "it's" (it is) is intended instead of "its".`],
+        [/\bthere (is|are|was|were)\b[^.!?]{0,50}\btheir\b/i, 'Check there/their usage in the same clause.'],
+        [/\bcould of\b/i, `Use "could have" instead of "could of".`],
+        [/\bshould of\b/i, `Use "should have" instead of "should of".`],
+    ];
+    commonConfusions.forEach(([pattern, tip]) => { if (pattern.test(text)) issues.push(`${label}: ${tip}`); });
     return issues;
 }
 
@@ -148,7 +219,7 @@ function renderGrammarResults(entries) {
     grammarSummary.innerHTML = grouped
         .map((item) => {
             const issueCount = item.issues.length;
-            const score = Math.max(0, 100 - (issueCount * 7));
+            const score = Math.max(0, 100 - (issueCount * 4));
             return `<p><strong>${item.label}</strong>: ${issueCount} issue(s) · Grammar score ${score}%</p>`;
         })
         .join('');
