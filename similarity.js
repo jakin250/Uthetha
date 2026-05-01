@@ -13,11 +13,14 @@ const grammarSummary = document.getElementById('grammarSummary');
 const matchResults = document.getElementById('matchResults');
 const matchLegend = document.getElementById('matchLegend');
 const matchList = document.getElementById('matchList');
+const similarityPanel = document.querySelector('.similarity-panel');
 const HIGHLIGHT_CLASSES = ['highlight-1', 'highlight-2', 'highlight-3', 'highlight-4', 'highlight-5'];
 
 const escapeHtml = (value) => value.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 
-function tokenize(text) { return new Set(text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(Boolean)); }
+function normalizeWhitespace(text) { return text.replace(/\s+/g, ' ').trim(); }
+function tokenize(text) { return new Set(text.toLowerCase().replace(/[^\p{L}\p{N}\s']/gu, ' ').split(/\s+/).filter(Boolean)); }
+function tokenList(text) { return text.toLowerCase().replace(/[^\p{L}\p{N}\s']/gu, ' ').split(/\s+/).filter(Boolean); }
 function splitSentences(text) { return text.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean); }
 
 function jaccardSimilarity(a, b) {
@@ -26,6 +29,59 @@ function jaccardSimilarity(a, b) {
     const i = [...x].filter((t) => y.has(t)).length;
     const u = new Set([...x, ...y]).size;
     return u ? (i / u) * 100 : 0;
+}
+
+function ngramSet(tokens, n = 3) {
+    const set = new Set();
+    for (let i = 0; i <= tokens.length - n; i += 1) set.add(tokens.slice(i, i + n).join(' '));
+    return set;
+}
+
+function cosineSimilarity(a, b) {
+    const freq = (tokens) => tokens.reduce((m, t) => (m.set(t, (m.get(t) || 0) + 1), m), new Map());
+    const aFreq = freq(tokenList(a)); const bFreq = freq(tokenList(b));
+    const terms = new Set([...aFreq.keys(), ...bFreq.keys()]);
+    let dot = 0; let aNorm = 0; let bNorm = 0;
+    terms.forEach((term) => {
+        const av = aFreq.get(term) || 0; const bv = bFreq.get(term) || 0;
+        dot += av * bv; aNorm += av * av; bNorm += bv * bv;
+    });
+    if (!aNorm || !bNorm) return 0;
+    return (dot / (Math.sqrt(aNorm) * Math.sqrt(bNorm))) * 100;
+}
+
+function fingerprintSimilarity(a, b) {
+    const aTri = ngramSet(tokenList(a), 3); const bTri = ngramSet(tokenList(b), 3);
+    if (!aTri.size && !bTri.size) return 100;
+    const overlap = [...aTri].filter((g) => bTri.has(g)).length;
+    const union = new Set([...aTri, ...bTri]).size;
+    return union ? (overlap / union) * 100 : 0;
+}
+
+function levenshteinSimilarity(a, b) {
+    const s = tokenList(a).slice(0, 450).join(' ');
+    const t = tokenList(b).slice(0, 450).join(' ');
+    if (!s.length && !t.length) return 100;
+    const rows = s.length + 1; const cols = t.length + 1;
+    let prev = Array.from({ length: cols }, (_, j) => j);
+    for (let i = 1; i < rows; i += 1) {
+        const curr = [i];
+        for (let j = 1; j < cols; j += 1) {
+            const cost = s.charCodeAt(i - 1) === t.charCodeAt(j - 1) ? 0 : 1;
+            curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+        }
+        prev = curr;
+    }
+    const dist = prev[cols - 1];
+    return Math.max(0, (1 - (dist / Math.max(s.length, t.length))) * 100);
+}
+
+function compositeSimilarity(a, b) {
+    const jaccard = jaccardSimilarity(a, b);
+    const cosine = cosineSimilarity(a, b);
+    const fingerprint = fingerprintSimilarity(a, b);
+    const edit = levenshteinSimilarity(a, b);
+    return (jaccard * 0.25) + (cosine * 0.35) + (fingerprint * 0.25) + (edit * 0.15);
 }
 
 function setStatus(message, state = 'idle') { statusMessage.textContent = message; statusMessage.dataset.state = state; }
@@ -38,7 +94,7 @@ function buildTable(entries) {
         html += `<tr><th>${r.label}</th>`;
         entries.forEach((c, ci) => {
             if (ri === ci) { html += '<td>100.00%</td>'; return; }
-            const score = jaccardSimilarity(r.text, c.text);
+            const score = compositeSimilarity(r.text, c.text);
             if (ci > ri) { total += score; count += 1; }
             html += `<td>${score.toFixed(2)}%</td>`;
         });
@@ -138,6 +194,24 @@ function runBasicGrammarChecks(text, label) {
     });
     if ((text.match(/"/g) || []).length % 2 !== 0) issues.push(`${label}: Possible unbalanced double quotation marks.`);
     if ((text.match(/\(/g) || []).length !== (text.match(/\)/g) || []).length) issues.push(`${label}: Possible unbalanced parentheses.`);
+    const sent = splitSentences(text);
+    sent.forEach((sentence, i) => {
+        if (sentence.split(/\s+/).length > 35) issues.push(`${label}: Sentence ${i + 1} is very long; consider splitting it for clarity.`);
+        if (/\b(am|is|are|was|were|be|been|being)\s+\w+ed\b/i.test(sentence) && /\bby\b/i.test(sentence)) {
+            issues.push(`${label}: Sentence ${i + 1} may use passive voice ("${sentence.slice(0, 70)}${sentence.length > 70 ? '…' : ''}").`);
+        }
+        if (/\b(very|really|quite|just|actually)\b.*\b(very|really|quite|just|actually)\b/i.test(sentence)) {
+            issues.push(`${label}: Sentence ${i + 1} repeats weak modifiers (e.g., very/really/just).`);
+        }
+    });
+    const commonConfusions = [
+        [/\byour welcome\b/i, `Use "you're welcome" instead of "your welcome".`],
+        [/\bits a\b/i, `Check if "it's" (it is) is intended instead of "its".`],
+        [/\bthere (is|are|was|were)\b[^.!?]{0,50}\btheir\b/i, 'Check there/their usage in the same clause.'],
+        [/\bcould of\b/i, `Use "could have" instead of "could of".`],
+        [/\bshould of\b/i, `Use "should have" instead of "should of".`],
+    ];
+    commonConfusions.forEach(([pattern, tip]) => { if (pattern.test(text)) issues.push(`${label}: ${tip}`); });
     return issues;
 }
 
@@ -148,7 +222,7 @@ function renderGrammarResults(entries) {
     grammarSummary.innerHTML = grouped
         .map((item) => {
             const issueCount = item.issues.length;
-            const score = Math.max(0, 100 - (issueCount * 7));
+            const score = Math.max(0, 100 - (issueCount * 4));
             return `<p><strong>${item.label}</strong>: ${issueCount} issue(s) · Grammar score ${score}%</p>`;
         })
         .join('');
@@ -165,25 +239,74 @@ function analyzeSimilarity() {
         resultsSection.hidden = true; grammarResults.hidden = true; matchResults.hidden = true; overallScore.textContent = '';
         setStatus('Please add content in at least two text boxes before analyzing.', 'error'); return;
     }
-    buildTable(entries); const sharedSentences = renderHighlights(entries); renderMatchSummary(entries, sharedSentences); renderGrammarResults(entries);
-    resultsSection.hidden = false;
-    setStatus(`Analysis complete for ${entries.length} text(s). Shared sentences are color highlighted in each preview.`, 'success');
+    try {
+        buildTable(entries); const sharedSentences = renderHighlights(entries); renderMatchSummary(entries, sharedSentences); renderGrammarResults(entries);
+        similarityPanel?.classList.add('preview-only');
+        resultsSection.hidden = false;
+        setStatus(`Analysis complete for ${entries.length} text(s). Shared sentences are color highlighted in each preview.`, 'success');
+    } catch (error) {
+        console.error(error);
+        resultsSection.hidden = true; grammarResults.hidden = true; matchResults.hidden = true;
+        setStatus('There was a problem while analyzing this input. Try shorter text or refresh and try again.', 'error');
+    }
 }
 
 function clearAll() {
     textAreas.forEach((a) => { a.value = ''; }); uploadInputs.forEach((i) => { i.value = ''; });
     previews.forEach((p) => { p.innerHTML = ''; }); similarityTable.innerHTML = ''; grammarOutput.innerHTML = ''; grammarSummary.innerHTML = ''; matchLegend.innerHTML = ''; matchList.innerHTML = '';
     resultsSection.hidden = true; grammarResults.hidden = true; matchResults.hidden = true; overallScore.textContent = '';
+    similarityPanel?.classList.remove('preview-only');
     setStatus('All text inputs cleared.', 'idle');
+}
+
+async function parsePdfFile(file) {
+    if (!window.pdfjsLib) {
+        await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js';
+            script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
+        });
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
+    }
+    const buffer = await file.arrayBuffer();
+    const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
+    const pages = await Promise.all(Array.from({ length: pdf.numPages }, async (_, i) => {
+        const page = await pdf.getPage(i + 1);
+        const content = await page.getTextContent();
+        return content.items.map((item) => item.str).join(' ');
+    }));
+    return pages.join('\n');
+}
+
+async function parseDocxFile(file) {
+    if (!window.mammoth) {
+        await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js';
+            script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
+        });
+    }
+    const buffer = await file.arrayBuffer();
+    const result = await window.mammoth.extractRawText({ arrayBuffer: buffer });
+    return result.value;
+}
+
+async function parseFileContent(file) {
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    if (['txt', 'md', 'csv', 'rtf'].includes(ext) || file.type.startsWith('text/')) return file.text();
+    if (ext === 'pdf' || file.type === 'application/pdf') return parsePdfFile(file);
+    if (ext === 'docx' || file.type.includes('wordprocessingml')) return parseDocxFile(file);
+    if (ext === 'doc') throw new Error('Legacy .doc format is not reliably parseable in-browser. Convert to .docx or .pdf.');
+    return file.text();
 }
 
 uploadInputs.forEach((input) => input.addEventListener('change', async (event) => {
     const file = event.target.files?.[0]; if (!file) return;
     try {
-        const fileText = await file.text(); const idx = Number(input.dataset.index); textAreas[idx].value = fileText;
+        const fileText = await parseFileContent(file); const idx = Number(input.dataset.index); textAreas[idx].value = fileText;
         setStatus(`${file.name} loaded into Text ${idx + 1}.`, 'success');
-    } catch {
-        setStatus(`Could not read ${file.name}. Please try a plain-text file.`, 'error');
+    } catch (error) {
+        setStatus(`Could not read ${file.name}. ${error?.message || 'Try a different file.'}`, 'error');
     }
 }));
 
