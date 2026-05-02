@@ -11,13 +11,13 @@
     <div class="top-bar">
         <div class="site-shell top-bar__inner">
             <p>Uthetha text and speech studio</p>
-            <a href="index.html">Main workspace</a>
+            <a href="https://uthetha.unysa.online/">Main workspace</a>
         </div>
     </div>
 
     <header class="site-header">
         <div class="site-shell site-header__inner">
-            <a class="brand" href="index.html">
+            <a class="brand" href="https://uthetha.unysa.online/">
                 <span class="brand__mark">Uthetha</span>
                 <span class="brand__sub">Text Similarity</span>
             </a>
@@ -32,36 +32,41 @@
                 <p class="hero-copy">Paste text directly or upload .txt, .md, or .csv files, then run similarity analysis.</p>
             </div>
 
-            <div class="similarity-input-grid">
-                <article class="similarity-card"><h2>Text 1</h2><input type="file" class="text-upload" data-index="0" accept=".txt,.md,.csv,.pdf,.doc,.docx,.rtf,text/plain,text/markdown,text/csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf"><textarea class="similarity-text" data-index="0" placeholder="Paste or upload text 1"></textarea><div class="text-preview" id="preview-0"></div></article>
-                <article class="similarity-card"><h2>Text 2</h2><input type="file" class="text-upload" data-index="1" accept=".txt,.md,.csv,.pdf,.doc,.docx,.rtf,text/plain,text/markdown,text/csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf"><textarea class="similarity-text" data-index="1" placeholder="Paste or upload text 2"></textarea><div class="text-preview" id="preview-1"></div></article>
-                <article class="similarity-card"><h2>Text 3</h2><input type="file" class="text-upload" data-index="2" accept=".txt,.md,.csv,.pdf,.doc,.docx,.rtf,text/plain,text/markdown,text/csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf"><textarea class="similarity-text" data-index="2" placeholder="Paste or upload text 3"></textarea><div class="text-preview" id="preview-2"></div></article>
-                <article class="similarity-card"><h2>Text 4</h2><input type="file" class="text-upload" data-index="3" accept=".txt,.md,.csv,.pdf,.doc,.docx,.rtf,text/plain,text/markdown,text/csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf"><textarea class="similarity-text" data-index="3" placeholder="Paste or upload text 4"></textarea><div class="text-preview" id="preview-3"></div></article>
+            <div class="similarity-layout">
+                <div class="similarity-main-column">
+                    <div class="similarity-input-grid">
+                <article class="similarity-card"><h2>Text 1</h2><input type="file" class="text-upload" data-index="0" accept=".txt,.md,.csv,.pdf,.docx,.ppt,.pptx,.pub,text/plain,text/markdown,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/x-mspublisher"><textarea class="similarity-text" data-index="0" placeholder="Paste or upload text 1"></textarea><div class="text-preview" id="preview-0"></div></article>
+                <article class="similarity-card"><h2>Text 2</h2><input type="file" class="text-upload" data-index="1" accept=".txt,.md,.csv,.pdf,.docx,.ppt,.pptx,.pub,text/plain,text/markdown,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/x-mspublisher"><textarea class="similarity-text" data-index="1" placeholder="Paste or upload text 2"></textarea><div class="text-preview" id="preview-1"></div></article>
+                <article class="similarity-card"><h2>Text 3</h2><input type="file" class="text-upload" data-index="2" accept=".txt,.md,.csv,.pdf,.docx,.ppt,.pptx,.pub,text/plain,text/markdown,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/x-mspublisher"><textarea class="similarity-text" data-index="2" placeholder="Paste or upload text 3"></textarea><div class="text-preview" id="preview-2"></div></article>
+                <article class="similarity-card"><h2>Text 4</h2><input type="file" class="text-upload" data-index="3" accept=".txt,.md,.csv,.pdf,.docx,.ppt,.pptx,.pub,text/plain,text/markdown,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/x-mspublisher"><textarea class="similarity-text" data-index="3" placeholder="Paste or upload text 4"></textarea><div class="text-preview" id="preview-3"></div></article>
             </div>
 
-            <div class="similarity-actions">
+                    <div class="similarity-actions">
                 <button id="analyzeSimilarity" class="button button--primary" type="button">Analyze similarity</button>
                 <button id="clearSimilarity" class="button button--ghost" type="button">Clear all</button>
             </div>
 
             <p id="similarityStatus" class="status-message">Add at least two texts with content to begin.</p>
-            <p id="overallScore" class="character-count"></p>
+                    <p id="overallScore" class="character-count"></p>
 
-            <div id="similarityResults" class="similarity-results" hidden>
+                    <div id="similarityResults" class="similarity-results" hidden>
                 <h2>Pairwise similarity (composite score %)</h2>
                 <div class="table-wrap"><table class="similarity-table" id="similarityTable"></table></div>
             </div>
+                </div>
 
-
-            <div id="matchResults" class="similarity-results" hidden>
+                <aside class="similarity-side-column">
+                    <div id="matchResults" class="similarity-results" hidden>
                 <h2>Shared sentences and phrases</h2>
                 <div id="matchLegend" class="match-legend"></div>
                 <div id="matchList" class="match-list"></div>
             </div>
 
-            <div id="grammarResults" class="similarity-results" hidden>
+                    <div id="grammarResults" class="similarity-results" hidden>
                 <h2>Grammar checks (basic)</h2>
                 <div id="grammarSummary" class="grammar-summary"></div><div id="grammarOutput" class="grammar-output"></div>
+            </div>
+                </aside>
             </div>
         </section>
     </main>

@@ -262,7 +262,9 @@ async function parsePdfFile(file) {
         await new Promise((resolve, reject) => {
             const script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js';
-            script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
         });
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
     }
@@ -273,7 +275,8 @@ async function parsePdfFile(file) {
         const content = await page.getTextContent();
         return content.items.map((item) => item.str).join(' ');
     }));
-    return pages.join('\n');
+    return pages.join('
+');
 }
 
 async function parseDocxFile(file) {
@@ -281,7 +284,9 @@ async function parseDocxFile(file) {
         await new Promise((resolve, reject) => {
             const script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js';
-            script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
         });
     }
     const buffer = await file.arrayBuffer();
@@ -289,20 +294,34 @@ async function parseDocxFile(file) {
     return result.value;
 }
 
+async function parseBinaryAsText(file) {
+    const buffer = await file.arrayBuffer();
+    try {
+        return new TextDecoder('utf-8', { fatal: false }).decode(buffer);
+    } catch (_) {
+        return new TextDecoder().decode(buffer);
+    }
+}
+
 async function parseFileContent(file) {
     const ext = (file.name.split('.').pop() || '').toLowerCase();
-    if (['txt', 'md', 'csv', 'rtf'].includes(ext) || file.type.startsWith('text/')) return file.text();
+    if (['txt', 'md', 'csv'].includes(ext) || file.type.startsWith('text/')) return file.text();
     if (ext === 'pdf' || file.type === 'application/pdf') return parsePdfFile(file);
     if (ext === 'docx' || file.type.includes('wordprocessingml')) return parseDocxFile(file);
-    if (ext === 'doc') throw new Error('Legacy .doc format is not reliably parseable in-browser. Convert to .docx or .pdf.');
-    return file.text();
+    if (['ppt', 'pptx', 'pub'].includes(ext)) return parseBinaryAsText(file);
+    throw new Error('Unsupported file type. Use .txt, .md, .csv, .pdf, .docx, .ppt, .pptx, or .pub.');
 }
 
 uploadInputs.forEach((input) => input.addEventListener('change', async (event) => {
     const file = event.target.files?.[0]; if (!file) return;
     try {
         const fileText = await parseFileContent(file); const idx = Number(input.dataset.index); textAreas[idx].value = fileText;
-        setStatus(`${file.name} loaded into Text ${idx + 1}.`, 'success');
+        const ext = (file.name.split('.').pop() || '').toLowerCase();
+        if (['ppt', 'pptx', 'pub'].includes(ext)) {
+            setStatus(`${file.name} loaded into Text ${idx + 1} (best-effort text extraction for ${ext.toUpperCase()}).`, 'success');
+        } else {
+            setStatus(`${file.name} loaded into Text ${idx + 1}.`, 'success');
+        }
     } catch (error) {
         setStatus(`Could not read ${file.name}. ${error?.message || 'Try a different file.'}`, 'error');
     }
