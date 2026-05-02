@@ -267,7 +267,12 @@ uploadInputs.forEach((input) => input.addEventListener('change', async (event) =
     const file = event.target.files?.[0]; if (!file) return;
     try {
         const fileText = await parseFileContent(file); const idx = Number(input.dataset.index); textAreas[idx].value = fileText;
-        setStatus(`${file.name} loaded into Text ${idx + 1}.`, 'success');
+        const ext = (file.name.split('.').pop() || '').toLowerCase();
+        if (['ppt', 'pptx', 'pub'].includes(ext)) {
+            setStatus(`${file.name} loaded into Text ${idx + 1} (best-effort text extraction for ${ext.toUpperCase()}).`, 'success');
+        } else {
+            setStatus(`${file.name} loaded into Text ${idx + 1}.`, 'success');
+        }
     } catch (error) {
         setStatus(`Could not read ${file.name}. ${error?.message || 'Try a different file.'}`, 'error');
     }
