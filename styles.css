@@ -892,7 +892,7 @@ textarea {
 
 .similarity-layout {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    grid-template-columns: minmax(0, 1.75fr) minmax(260px, 0.95fr);
     gap: 1.25rem;
     align-items: start;
 }
@@ -905,6 +905,16 @@ textarea {
 
 .similarity-side-column .similarity-results {
     margin-top: 0;
+    width: 100%;
+}
+
+.similarity-side-column,
+.similarity-side-column .similarity-results,
+#matchResults,
+#grammarResults {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .similarity-input-grid {
@@ -928,7 +938,7 @@ textarea {
     border: 1px solid var(--border-color, #d7deea);
     border-radius: 14px;
     padding: 1rem;
-    background: var(--panel-alt-bg, #c0c0c0);
+    background: var(--panel-alt-bg, #f6fbff);
     display: grid;
     gap: 0.75rem;
 }
@@ -985,7 +995,7 @@ textarea {
 }
 
 .similarity-table th {
-    background: var(--panel-alt-bg, #c0c0c0);
+    background: var(--panel-alt-bg, #f6fbff);
 }
 
 
