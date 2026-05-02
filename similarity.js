@@ -257,45 +257,10 @@ function clearAll() {
     setStatus('All text inputs cleared.', 'idle');
 }
 
-async function parsePdfFile(file) {
-    if (!window.pdfjsLib) {
-        await new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js';
-            script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
-        });
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
-    }
-    const buffer = await file.arrayBuffer();
-    const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
-    const pages = await Promise.all(Array.from({ length: pdf.numPages }, async (_, i) => {
-        const page = await pdf.getPage(i + 1);
-        const content = await page.getTextContent();
-        return content.items.map((item) => item.str).join(' ');
-    }));
-    return pages.join('\n');
-}
-
-async function parseDocxFile(file) {
-    if (!window.mammoth) {
-        await new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js';
-            script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
-        });
-    }
-    const buffer = await file.arrayBuffer();
-    const result = await window.mammoth.extractRawText({ arrayBuffer: buffer });
-    return result.value;
-}
-
 async function parseFileContent(file) {
     const ext = (file.name.split('.').pop() || '').toLowerCase();
-    if (['txt', 'md', 'csv', 'rtf'].includes(ext) || file.type.startsWith('text/')) return file.text();
-    if (ext === 'pdf' || file.type === 'application/pdf') return parsePdfFile(file);
-    if (ext === 'docx' || file.type.includes('wordprocessingml')) return parseDocxFile(file);
-    if (ext === 'doc') throw new Error('Legacy .doc format is not reliably parseable in-browser. Convert to .docx or .pdf.');
-    return file.text();
+    if (['txt', 'md', 'csv'].includes(ext) || file.type.startsWith('text/')) return file.text();
+    throw new Error('Only .txt, .md, and .csv files are supported for upload.');
 }
 
 uploadInputs.forEach((input) => input.addEventListener('change', async (event) => {
